@@ -55,9 +55,9 @@
       <ion-view view-title="Schmee">
         <ion-content class="padding">
             <div id="fullpage">
+                <div id='watching'></div><br/>
                 <button onclick="startWatch();">Start Watch</button>
                 <button onclick="stopWatch();">Stop Watch</button>
-                <br/><div id='watching'></div>
                 <hr/>
                     
                 <span id='intercept'/>Intercept ON</span><br/>
@@ -78,8 +78,6 @@
       <ion-view title="Contacts">
         <ion-content>
             <ion-list>
-                <button class="button" ng-click="loadContacts()">Load Contacts</button>
-                <hr/>
                 <ion-item ng-repeat="contact in contacts"
                                 ng-class-even="'even'"
                                 ng-class-odd="'odd'">

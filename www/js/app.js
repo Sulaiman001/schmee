@@ -5,10 +5,6 @@ angular.module('schmee', ['ionic', 'ngCordova'])
 
 .controller('ContactsCtrl', function($scope, $cordovaContacts) {
   var isAndroid = ionic.Platform.isAndroid();
-  
-  $scope.updateContacts = function() {
-    
-  } 
 
   $scope.loadContacts = function() {
     if (isAndroid) {
@@ -27,6 +23,11 @@ angular.module('schmee', ['ionic', 'ngCordova'])
     }
   }
 
+  var init = function () {
+     $scope.loadContacts();
+  };
+
+  init();
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
