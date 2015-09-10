@@ -8,10 +8,15 @@
 
         <link href="lib/ionic/css/ionic.css" rel="stylesheet">
 
+        <!-- Library Scripts -->
         <script src="lib/ionic/js/ionic.bundle.js"></script>
-
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+
+        <!-- App Scripts -->
+        <script src="js/parseEmoji.js"></script>
+
+
         <style type="text/css">
             body { width:100%; height:100%; margin:0; padding:0; overflow:hidden; background-color:#eee; }
             div#fullpage { width:100%; height:100%; margin:0; padding:0; border:0px solid red; text-align:center; vertical-align:middle; }
@@ -40,12 +45,21 @@
             <div id='data' style='text-align:left;'></div>
        </div>
 
-       <script>
+       <script type='text/javascript'>
+            var debug = true;
+
             function onLoad() {
                 if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
                     document.addEventListener('deviceready', initApp, false);
                 } else {
                     updateStatus('Must be run on a mobile device for full functionality.');
+                    
+                    // Test Components
+                    if (debug) {
+                        // parseEmoji.js required
+                        parseEmojiTest();
+                    }
+
                 }
             }
 
