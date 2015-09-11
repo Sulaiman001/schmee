@@ -3,6 +3,9 @@
   <name>Schmee</name>
   <description>
         Better notification and SMS options for Android.
+        Allows trusted senders to set the notification level of text
+        messages they send to alert immediately or be silent by using
+        recognized emojis.
     </description>
   <author email="mochadick@ehab.it" href="https://ehab.it/">
       Mocha Dick

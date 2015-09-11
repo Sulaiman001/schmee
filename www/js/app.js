@@ -20,6 +20,9 @@ angular.module('schmee', ['ionic', 'ngCordova'])
         { displayName: 'Mocha Dick'
         }
       ];
+    
+      $scope.contacts = defaultContacts($scope.contacts);
+      
     }
   }
 
