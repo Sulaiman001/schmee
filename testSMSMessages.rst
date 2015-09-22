@@ -1,0 +1,5 @@
+sms send 0835592468891 "Rock n roll in your soul ~ Mocha Dick"
+
+sms send 0835592468891 "Rock n roll in your soul ~ Mocha Dick !alert"
+
+sms send 0835592468891 "Rock n roll in your soul ~ Mocha Dick !silent"

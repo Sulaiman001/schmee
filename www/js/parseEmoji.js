@@ -1,8 +1,8 @@
 // Parses SMS messages for valid emojis
 // Written by Mocha Dick
 
-var alert_emoji = "☎";
-var silence_emoji = "😶";
+var alert_emoji = "!alert";
+var silence_emoji = "!silent";
 
 /* Function count the occurrences of substring in a string;
  * @param {String} string   Required. The string;
