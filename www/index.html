@@ -105,6 +105,7 @@
             // cordova-plugin-sms
             var debug = true;
 
+
             function onLoad() {
                 if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
                     document.addEventListener('deviceready', initApp, false);
@@ -115,10 +116,24 @@
                     if (debug) {
                         // parseEmoji.js required
                         parseEmojiTest();
+                        contactsTest();
                     }
 
                 }
+                
+                loadContacts();
             }
+
+            function loadContacts() {
+                if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
+                    window.contacts = navigator.contacts;
+                } else {
+                    window.contacts = testContacts;
+                }
+                console.log(window.contacts);
+            }
+
+            var default_notify = true;
 
             // we will store the intercepted SMS here for later restore
             var smsList = [];
@@ -135,13 +150,32 @@
                     
                     var divdata = $('div#data');
                     divdata.html( divdata.html() + JSON.stringify( data ) );
+
+                    var fromNumber = data.address;
+                    var msg = data.body;
+
+                    if (acceptAlerts(window.contacts, fromNumber)) {
+                        if (shouldAlert(msg)) {
+                            alert("Push to notify");
+                        }
+                    } else if (acceptSilence(window.contacts, fromNumber)) {
+                        if (shouldSilence(msg)) {
+                            alert("Don't push to notifications");
+                        }
+                    } else {
+                        if (default_notify) {
+                            alert("Default push to notify");
+                        } else {
+                            alert("Default silence");
+                        }
+                    }
+
                 });
 
                 if (SMS) {
                     startWatch();
                     toggleIntercept();
                 }
-                
             }
             
             function update( id, str ) {

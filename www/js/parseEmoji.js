@@ -46,6 +46,24 @@ function parseEmoji(sms) {
     }
 }
 
+function shouldAlert(sms) {
+    var emoji = parseEmoji(sms);
+    if (emoji === alert_emoji) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function shouldSilence(sms) {
+    var emoji = parseEmoji(sms);
+    if (emoji === silence_emoji) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /* Simple tests to verify parseEmoji identifies all of
  * the expected emojis.
  */
@@ -53,10 +71,10 @@ function parseEmojiTest() {
     var success = true;
     var errorCount = 0;
     var testNoEmoji = "Some plain text message."
-    var testAlertSMS = "Some loud ASAP SMS☎";
+    var testAlertSMS = "Some loud ASAP SMS ☎";
     var testSilentSMS = "Some silent SMS 😶";
     var return_emoji = "";
-    console.log("Testing parseEmoji()...")
+    console.log("Testing parseEmoji.js...")
     return_emoji = parseEmoji(testAlertSMS);
     if (return_emoji != alert_emoji) {
         console.log("+  Error identifying alert emoji");

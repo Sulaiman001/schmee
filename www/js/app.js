@@ -3,31 +3,28 @@ var debug = true;
 
 angular.module('schmee', ['ionic', 'ngCordova'])
 
-.controller('ContactsCtrl', function($scope, $cordovaContacts) {
+
+.controller('SchmeeCtrl', function($scope, $cordovaContacts) {
   var isAndroid = ionic.Platform.isAndroid();
 
   $scope.loadContacts = function() {
     if (isAndroid) {
       $cordovaContacts.find({multiple: true}).then(function(res) {
-        $scope.contacts  = res;
+        $scope.contacts  = defaultContacts(res);
       });
     } else {
-      $scope.contacts = [
-        { displayName: 'Glen Baker'
-        },
-        { displayName: 'Robert Hawk'
-        },
-        { displayName: 'Mocha Dick'
-        }
-      ];
+      $scope.contacts = testContacts;
     
       $scope.contacts = defaultContacts($scope.contacts);
       
     }
   }
 
+
   var init = function () {
-     $scope.loadContacts();
+    if (window.contacts == undefined) {
+      $scope.loadContacts();
+    }
   };
 
   init();
@@ -56,7 +53,7 @@ angular.module('schmee', ['ionic', 'ngCordova'])
       views: {
         'contacts-tab': {
           templateUrl: "templates/contacts.html",
-          controller: "ContactsCtrl"
+          controller: "SchmeeCtrl"
         }
       }
     });
