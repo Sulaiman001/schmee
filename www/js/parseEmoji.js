@@ -71,8 +71,8 @@ function parseEmojiTest() {
     var success = true;
     var errorCount = 0;
     var testNoEmoji = "Some plain text message."
-    var testAlertSMS = "Some loud ASAP SMS ☎";
-    var testSilentSMS = "Some silent SMS 😶";
+    var testAlertSMS = "Some loud ASAP SMS !alert";
+    var testSilentSMS = "Some silent SMS !silent";
     var return_emoji = "";
     console.log("Testing parseEmoji.js...")
     return_emoji = parseEmoji(testAlertSMS);

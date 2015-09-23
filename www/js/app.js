@@ -26,6 +26,14 @@ angular.module('schmee', ['ionic', 'ngCordova'])
     }
   }
 
+  $scope.toggleSilence = function(displayName) {
+    toggleSilenceContact(window.contacts, displayName);
+  }
+
+  $scope.toggleAlert = function(displayName) {
+    toggleAlertContact(window.contacts, displayName);
+  }
+
   $scope.init = function () {
     $scope.loadContacts();
   };

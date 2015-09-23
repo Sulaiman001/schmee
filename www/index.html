@@ -42,7 +42,7 @@
     <script id="templates/tabs.html" type="text/ng-template">
       <ion-tabs class="tabs-icon-top tabs-color-active-positive">
 
-        <ion-tab title="Home" icon="ion-home" href="#/tab/home">
+        <ion-tab title="Schmee" icon="ion-home" href="#/tab/home">
           <ion-nav-view name="home-tab"></ion-nav-view>
         </ion-tab>
 
@@ -57,9 +57,9 @@
       <ion-view view-title="Schmee">
         <ion-content class="padding">
             <div id="fullpage">
-                <div id='watching'></div><br/>
                 <button onclick="startWatch();">Start Watch</button>
-                <button onclick="stopWatch();">Stop Watch</button>
+                <button onclick="stopWatch();">Stop Watch</button><br/>
+                <div id='watching'></div>
                 <hr/>
                     
                 <span id='intercept'/>Intercept ON</span><br/>
@@ -89,12 +89,14 @@
                     <h2>{{contact.displayName}}</h2>
 
                     <ion-toggle ng-model="contact.alerts"
-                                       ng-checked="contact.alerts">
+                                       ng-checked="contact.alerts"
+                                       ng-clicked="toggleAlert(displayName)">
                       Accept Alert ☎
                     </ion-toggle>
 
                     <ion-toggle ng-model="contact.silence"
-                                       ng-checked="contact.silence">
+                                       ng-checked="contact.silence"
+                                       ng-clicked="toggleSilence(contact.displayName)">
                       Accept Silence 😶
                     </ion-toggle>
                 </ion-item>
@@ -111,7 +113,6 @@
             function onLoad() {
                 if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
                     document.addEventListener('deviceready', initApp, false);
-
                 } else {
                     updateStatus('Must be run on a mobile device for full functionality.');
                     
@@ -128,11 +129,13 @@
             }
 
             function onContactsLoadSuccess(contacts) {
-                window.contacts = contacts;
-                $('#test').html(JSON.stringify(window.contacts));
+                // js = callback hell
+                window.contacts = defaultContacts(contacts);
+                // $('#test').html(JSON.stringify(window.contacts));
             }
 
             function onContactsLoadError(contactError) {
+                // js = callback hell
                 alert("Error loading contacts", contactError);
             }
 
@@ -143,12 +146,11 @@
                     options.filter = "";          // empty search string returns all contacts
                     options.multiple = true;      // return multiple results
                     filter = ["displayName", "name", "nickname", "phoneNumbers"];   // return contact.displayName 
-                    window.contacts = navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
+                    navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
                 } else {
                     window.contacts = defaultContacts(testContacts);
+                    // $('#test').html(JSON.stringify(window.contacts));
                 }
-                console.log(window.contacts);
-                $('#test').html(JSON.stringify(window.contacts));
             }
 
             var default_notify = true;
@@ -156,6 +158,51 @@
             // we will store the intercepted SMS here for later restore
             var smsList = [];
             var interceptEnabled = false;
+
+            function schmeeNotifications(data) {
+                var divdata = $('div#data');
+                divdata.html( divdata.html() + JSON.stringify( data ) );
+
+                var fromNumber = data.address;
+                var msg = data.body;
+
+                if (isKnownContact(window.contacts, fromNumber)) {
+                    // Known Contacts
+                    if (shouldAlert(msg)) {
+                        if (acceptAlerts(window.contacts, fromNumber)) {
+                            alert("Known Contact with alert permission, alert found.");
+                        } else {
+                            alert("Known Contact without alert permission, alert found.");
+                        }
+                    }
+
+                    if (shouldSilence(msg)) {
+                        if (acceptSilence(window.contacts, fromNumber)) {
+                            alert("Known Contact with silence permission, silence found.");
+                        } else {
+                            alert("Known Contact without silence permission, silence found.");
+                        }
+                    }
+                } else {
+                    // Unknown Contacts
+                    if (shouldAlert(msg)) {
+                        if (default_notify) {
+                            alert("Unknown Contact, default accept emojis, alert found.");
+                        } else {
+                            alert("Unknown Contact, default reject emojis, alert found.");
+                        }
+                    }
+
+                    if (shouldSilence(msg)) {
+                        if (default_notify) {
+                            alert("Unknown Contact, default accept emojis, silence found.");
+                        } else {
+                            alert("Unknown Contact, default reject emojis, silence found.");
+                        }
+                    }
+                    
+                }
+            }
 
             function initApp() {
                 if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
@@ -166,27 +213,8 @@
                     
                     updateStatus('SMS arrived, count: ' + smsList.length );
                     
-                    var divdata = $('div#data');
-                    divdata.html( divdata.html() + JSON.stringify( data ) );
-
-                    var fromNumber = data.address;
-                    var msg = data.body;
-
-                    if (acceptAlerts(window.contacts, fromNumber)) {
-                        if (shouldAlert(msg)) {
-                            alert("Push to notify");
-                        }
-                    } else if (acceptSilence(window.contacts, fromNumber)) {
-                        if (shouldSilence(msg)) {
-                            alert("Don't push to notifications");
-                        }
-                    } else {
-                        if (default_notify) {
-                            alert("Default push to notify");
-                        } else {
-                            alert("Default silence");
-                        }
-                    }
+                    schmeeNotifications(data);
+                    
 
                 });
 

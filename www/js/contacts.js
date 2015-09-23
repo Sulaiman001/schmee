@@ -37,10 +37,27 @@ function isTrue(contactsArray, phoneNumber, field) {
 				num = num.replace(")", "");
 				num = num.replace("-", "");
 				num = num.replace(" ", "");
-				// console.log(num);
-				// console.log(phoneNumber.slice(3, phoneNumber.length));
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return contactsArray[i][field];
+				}
+			}
+		}
+	}
+	return false;
+}
+
+function isKnownContact(contactsArray, phoneNumber) {
+	for (i = 0; i < contactsArray.length; i++) {
+		var numbersArray = contactsArray[i].phoneNumbers;
+		if (numbersArray instanceof Array) {
+			for (j = 0; j < numbersArray.length; j++) {
+				var num = numbersArray[j]["value"];
+				num = num.replace("(", "");
+				num = num.replace(")", "");
+				num = num.replace("-", "");
+				num = num.replace(" ", "");
+				if (num === phoneNumber.slice(3, phoneNumber.length)) {
+					return true;
 				}
 			}
 		}
@@ -56,7 +73,21 @@ function acceptSilence(contactsArray, phoneNumber) {
 	return isTrue(contactsArray, phoneNumber, "silence");
 }
 
+function toggleAlertContact(contactsArray, displayName) {
+	for(i=0;i<contactsArray.length;i++){
+		if (contactsArray[i]['displayName'] == displayName) {
+			contactsArray[i]['alerts'] = !contactsArray[i]['alerts'];
+		}
+	}
+}
 
+function toggleSilenceContact(contactsArray, displayName) {
+	for(i=0;i<contactsArray.length;i++){
+		if (contactsArray[i]['displayName'] == displayName) {
+			contactsArray[i]['silence'] = !contactsArray[i]['silence'];
+		}
+	}
+}
 
 var testContacts = [{
       	"displayName": 'Glen Baker',
