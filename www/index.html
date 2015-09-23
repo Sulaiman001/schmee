@@ -7,6 +7,8 @@
 
         <title>Schmee</title>
 
+        <link rel="shortcut icon" type="image/png" href="favicon.png">
+
         <link href="lib/ionic/css/ionic.css" rel="stylesheet">
 
         <!-- Library Scripts -->
@@ -58,17 +60,11 @@
         <ion-content class="padding">
             <div id="fullpage">
                 <button onclick="startWatch();">Start Watch</button>
-                <button onclick="stopWatch();">Stop Watch</button><br/>
+                <button onclick="stopWatch();">Stop Watch</button>
+                <button onclick="updateStatus('');updateData('');smsList.length=0;">Clear</button>
+                <br/>
                 <div id='watching'></div>
                 <hr/>
-                    
-                <span id='intercept'/>Intercept ON</span><br/>
-                <button id='enable_intercept' onclick='toggleIntercept();'>Disable</button> 
-                <button onclick="restoreAllSMS();">Restore SMS</button>
-                <button onclick="updateStatus('');updateData('');smsList.length=0;">Clear</button>
-               
-                <hr/>
-                
                  
                 <div id='status'></div><hr/>
                 <div id='data' style='text-align:left;'></div>
@@ -153,6 +149,29 @@
                 }
             }
 
+            scheduleAlert = function (txt, type, from) {
+                // var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+                cordova.plugins.notification.local.add({
+                    id: 1,
+                    text: txt,
+                    title: type + " from " + from,
+                    icon: 'file://favicon.png'
+                });
+
+                showToast(txt);
+            };
+
+            scheduleSilent = function (txt, type, from) {
+                // var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+                cordova.plugins.notification.local.add({
+                    id: 1,
+                    text: txt,
+                    title: type + " from " + from,
+                    icon: 'file://favicon.png',
+                    sound: null
+                });
+            };
+
             var default_notify = true;
 
             // we will store the intercepted SMS here for later restore
@@ -170,26 +189,30 @@
                     // Known Contacts
                     if (shouldAlert(msg)) {
                         if (acceptAlerts(window.contacts, fromNumber)) {
-                            alert("Known Contact with alert permission, alert found.");
+                            // alert("Known Contact with alert permission, alert found.");
+                            scheduleAlert(msg, "Alert", fromNumber);
                         } else {
-                            alert("Known Contact without alert permission, alert found.");
+                            // alert("Known Contact without alert permission, alert found.");
                         }
                     }
 
                     if (shouldSilence(msg)) {
                         if (acceptSilence(window.contacts, fromNumber)) {
-                            alert("Known Contact with silence permission, silence found.");
+                            // alert("Known Contact with silence permission, silence found.");
+                            scheduleSilent(msg, "Silence", fromNumber);
                         } else {
-                            alert("Known Contact without silence permission, silence found.");
+                            // alert("Known Contact without silence permission, silence found.");
                         }
                     }
                 } else {
                     // Unknown Contacts
                     if (shouldAlert(msg)) {
                         if (default_notify) {
-                            alert("Unknown Contact, default accept emojis, alert found.");
+                            // alert("Unknown Contact, default accept emojis, alert found.");
+                            scheduleAlert(msg, "Alert", fromNumber);
                         } else {
-                            alert("Unknown Contact, default reject emojis, alert found.");
+                            // alert("Unknown Contact, default reject emojis, alert found.");
+                            scheduleSilent(msg, "Silence", fromNumber);
                         }
                     }
 
@@ -214,14 +237,18 @@
                     updateStatus('SMS arrived, count: ' + smsList.length );
                     
                     schmeeNotifications(data);
-                    
-
                 });
 
                 if (SMS) {
                     startWatch();
                     toggleIntercept();
                 }
+
+                document.addEventListener('deviceready', function(){
+                    cordova.plugins.notification.local.onclick = function (notification) {
+                        location.href="index.html";
+                    };
+                }, false);
             }
             
             function update( id, str ) {
@@ -318,8 +345,8 @@
                 
                 if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
                 
-                $('span#intercept').text( 'intercept ' + (interceptEnabled ? 'ON' : 'OFF') );
-                $('button#enable_intercept').text( interceptEnabled ? 'Disable' : 'Enable' );
+                // $('span#intercept').text( 'intercept ' + (interceptEnabled ? 'ON' : 'OFF') );
+                // $('button#enable_intercept').text( interceptEnabled ? 'Disable' : 'Enable' );
             }
         </script>
     </body>
