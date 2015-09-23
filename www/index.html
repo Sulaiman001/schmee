@@ -103,7 +103,6 @@
        
 
        <script type='text/javascript'>
-            // cordova-plugin-sms
             var debug = true;
 
             function onLoad() {
@@ -186,11 +185,12 @@
                 var msg = data.body;
 
                 if (isKnownContact(window.contacts, fromNumber)) {
+                    var fromName = getDisplayName(fromNumber);
                     // Known Contacts
                     if (shouldAlert(msg)) {
                         if (acceptAlerts(window.contacts, fromNumber)) {
                             // alert("Known Contact with alert permission, alert found.");
-                            scheduleAlert(msg, "Alert", fromNumber);
+                            scheduleAlert(msg, "Alert", fromName);
                         } else {
                             // alert("Known Contact without alert permission, alert found.");
                         }
@@ -199,7 +199,7 @@
                     if (shouldSilence(msg)) {
                         if (acceptSilence(window.contacts, fromNumber)) {
                             // alert("Known Contact with silence permission, silence found.");
-                            scheduleSilent(msg, "Silence", fromNumber);
+                            scheduleSilent(msg, "Silence", fromName);
                         } else {
                             // alert("Known Contact without silence permission, silence found.");
                         }

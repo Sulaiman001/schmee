@@ -3,6 +3,7 @@
 
 var alert_emoji = "!alert";
 var silence_emoji = "!silent";
+var emergency_emoji = "!emergency"
 
 /* Function count the occurrences of substring in a string;
  * @param {String} string   Required. The string;
@@ -32,6 +33,8 @@ function parseEmoji(sms) {
         return alert_emoji;
     } else if (sms.indexOf(silence_emoji) > 0) {
         return silence_emoji;
+    } else if (sms.indexOf(emergency_emoji) > 0) {
+        return emergency_emoji;
     } else if (sms.indexOf(alert_emoji) > 0 &&
                   sms.indexOf(silence_emoji) > 0) {
         var alert_count = occurrences(sms, alert_emoji);
@@ -46,23 +49,28 @@ function parseEmoji(sms) {
     }
 }
 
-function shouldAlert(sms) {
+function shouldEmoji(sms, check_emoji) {
     var emoji = parseEmoji(sms);
-    if (emoji === alert_emoji) {
+    if (emoji == check_emoji) {
         return true;
     } else {
         return false;
     }
 }
 
-function shouldSilence(sms) {
-    var emoji = parseEmoji(sms);
-    if (emoji === silence_emoji) {
-        return true;
-    } else {
-        return false;
-    }
+function shouldEmergency(sms) {
+    return shouldEmoji(sms, emergency_emoji);
 }
+
+function shouldAlert(sms) {
+    return shouldEmoji(sms, alert_emoji);
+}
+
+function shouldSilence(sms) {
+    return shouldEmoji(sms, silence_emoji);
+}
+
+// Tests
 
 /* Simple tests to verify parseEmoji identifies all of
  * the expected emojis.
@@ -73,8 +81,19 @@ function parseEmojiTest() {
     var testNoEmoji = "Some plain text message."
     var testAlertSMS = "Some loud ASAP SMS !alert";
     var testSilentSMS = "Some silent SMS !silent";
+    var testEmergencySMS = "Emergency!!! !emergency";
+
     var return_emoji = "";
     console.log("Testing parseEmoji.js...")
+    return_emoji = parseEmoji(testEmergencySMS);
+    if (return_emoji != emergency_emoji) {
+        console.log("+  Error identifying emergency emoji");
+        success = false;
+        errorCount += 1;
+    } else {
+        console.log("+  Success!  Emergency emoji identified");
+    }
+
     return_emoji = parseEmoji(testAlertSMS);
     if (return_emoji != alert_emoji) {
         console.log("+  Error identifying alert emoji");
