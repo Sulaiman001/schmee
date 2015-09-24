@@ -25,7 +25,7 @@
         <style type="text/css">
             body { width:100%; height:100%; margin:0; padding:0; overflow:hidden; background-color:#eee; }
             div#fullpage { width:100%; height:100%; margin:0; padding:0; border:0px solid red; text-align:center; vertical-align:middle; }
-            div#data { width:100%; overflow:scroll; }
+            div#data { width:100%; }
             button { font-size: 18px; }
         </style>
     </head>
@@ -59,13 +59,8 @@
       <ion-view view-title="Schmee">
         <ion-content class="padding">
             <div id="fullpage">
-                <button onclick="startWatch();">Start Watch</button>
-                <button onclick="stopWatch();">Stop Watch</button>
-                <button onclick="updateStatus('');updateData('');smsList.length=0;">Clear</button>
-                <br/>
-                <div id='watching'></div>
-                <hr/>
-                 
+                <button id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
+                <button onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
                 <div id='status'></div><hr/>
                 <div id='data' style='text-align:left;'></div>
             </div>
@@ -85,19 +80,19 @@
                     <ion-checkbox ng-model="contact.alerts"
                                   ng-checked="contact.alerts"
                                   ng-clicked="toggleAlert(displayName)">
-                      Accept Alert 👂 or !alert
+                      Accept !alert 👂
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.silence"
                                   ng-checked="contact.silence"
                                   ng-clicked="toggleSilence(contact.displayName)">
-                      Accept Silence 😶 or !silent
+                      Accept !silent 😶
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.emergency"
                                   ng-checked="contact.emergency"
                                   ng-clicked="toggleEmergency(contact.displayName)">
-                      Accept Emergency ❗ or !emergency
+                      Accept !emergency and ❗
                     </ion-checkbox>
                 </ion-item>
             </ion-list>
@@ -187,9 +182,15 @@
 
             var default_notify = true;
 
+
+            function toggleDefaultNotify(){
+                default_notify = ! default_notify;
+            }
+
             // we will store the intercepted SMS here for later restore
             var smsList = [];
             var interceptEnabled = false;
+            var watching = false;
 
             function schmeeNotifications(data) {
                 var divdata = $('div#data');
@@ -199,7 +200,8 @@
                 var msg = data.body;
 
                 if (isKnownContact(window.contacts, fromNumber)) {
-                    var fromName = getDisplayName(fromNumber);
+                    var fromName = getDisplayName(window.contacts, fromNumber);
+
                     // Known Contacts
                     if (shouldEmergency(msg)) {
                         // Emergency Override
@@ -270,8 +272,8 @@
                 });
 
                 if (SMS) {
-                    startWatch();
-                    toggleIntercept();
+                    toggleWatch();
+                    // toggleIntercept();
                 }
 
                 // Set location on notification click
@@ -290,7 +292,7 @@
                     cordova.plugins.backgroundMode.onactivate = function () {
                         setTimeout(function () {
                             cordova.plugins.backgroundMode.configure({
-                                text:'Watching incoming SMS in the background.'
+                                text:'Watching for incoming SMS....'
                             });
                         }, 5000);
                     }
@@ -362,7 +364,6 @@
                 updateData('');
                 
                 if(SMS) SMS.restoreSMS(smsList, function( n ){
-                    // clear the list if restore successfully
                     smsList.length = 0;
                     updateStatus(n + ' sms messages restored');
                     
@@ -373,7 +374,7 @@
 
             function startWatch() {
                 if(SMS) SMS.startWatch(function(){
-                    update('watching', 'watching started');
+                    $('#watchBtn').html('Stop Watching SMS');
                 }, function(){
                     updateStatus('failed to start watching');
                 });
@@ -381,23 +382,30 @@
 
             function stopWatch() {
                 if(SMS) SMS.stopWatch(function(){
-                    update('watching', 'watching stopped');
+                    $('#watchBtn').html('Start Watching SMS');
                 }, function(){
                     updateStatus('failed to stop watching');
                 });
+            }
+
+            function toggleWatch() {
+                watching = ! watching;
+
+                if (watching) {
+                    startWatch();
+                } else {
+                    stopWatch();
+                }
             }
             
             function toggleIntercept() {
                 interceptEnabled = ! interceptEnabled;
                 
-                if(interceptEnabled) { // clear the list before we start intercept
+                if(interceptEnabled) {
                     smsList.length = 0;
                 }
                 
                 if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
-                
-                // $('span#intercept').text( 'intercept ' + (interceptEnabled ? 'ON' : 'OFF') );
-                // $('button#enable_intercept').text( interceptEnabled ? 'Disable' : 'Enable' );
             }
         </script>
     </body>

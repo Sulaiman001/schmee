@@ -89,7 +89,7 @@ function getDisplayName(contactsArray, phoneNumber) {
 				var num = numbersArray[j]["value"];
 				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
-					return contactsArray[i]['displayName'];
+					return contactsArray[i].displayName;
 				}
 			}
 		}
@@ -134,27 +134,30 @@ function toggleSilenceContact(contactsArray, displayName) {
 }
 
 var testContacts = [{
-      	displayName: "Glen Baker",
-      	emergency: true,
-      	alerts: true,
-      	silence: true,
-      	phoneNumbers: [{
+		"id": "2",
+      	"displayName": "Glen Baker",
+      	"emergency": true,
+      	"alerts": true,
+      	"silence": true,
+      	"phoneNumbers": [{
 	      	"id": "4",
 	      	"value": "(559) 246-8891",
 	      	"type": "mobile"
 	    }]
 
     },
-    { displayName: 'Robert Hawk',
-	  emergency: true,
-      alerts: false,
-      silence: true
+    { "id": "1",
+      "displayName": 'Robert Hawk',
+	  "emergency": true,
+      "alerts": false,
+      "silence": true
     },
-    { displayName: 'Mocha Dick',
-      emergency: false,
-      alerts: false,
-      silence: false,
-      phoneNumbers: [{
+    { "id": "3",
+      "displayName": 'Mocha Dick',
+      "emergency": false,
+      "alerts": false,
+      "silence": false,
+      "phoneNumbers": [{
 	      	"id": "4",
 	      	"value": "(559) 888-8888",
 	      	"type": "mobile"
