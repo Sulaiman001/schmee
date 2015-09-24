@@ -5,6 +5,15 @@ var default_silence = true;
 var default_emergency = true;
 
 
+function stripNumber(num) {
+	num = num.replace("(", "");
+	num = num.replace(")", "");
+	num = num.replace("-", "");
+	num = num.replace(" ", "");
+	return num;
+}
+
+
 function defaultContacts(contactsArray) {
 	for (i = 0; i < contactsArray.length; i++) {
 		contactsArray = defaultAlert(contactsArray, i);
@@ -43,10 +52,7 @@ function isTrue(contactsArray, phoneNumber, field) {
 			for (j = 0; j < numbersArray.length; j++) {
 				
 				var num = numbersArray[j]["value"];
-				num = num.replace("(", "");
-				num = num.replace(")", "");
-				num = num.replace("-", "");
-				num = num.replace(" ", "");
+				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return contactsArray[i][field];
 				}
@@ -63,10 +69,7 @@ function isKnownContact(contactsArray, phoneNumber) {
 		if (numbersArray instanceof Array) {
 			for (j = 0; j < numbersArray.length; j++) {
 				var num = numbersArray[j]["value"];
-				num = num.replace("(", "");
-				num = num.replace(")", "");
-				num = num.replace("-", "");
-				num = num.replace(" ", "");
+				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return true;
 				}
@@ -84,10 +87,7 @@ function getDisplayName(contactsArray, phoneNumber) {
 		if (numbersArray instanceof Array) {
 			for (j = 0; j < numbersArray.length; j++) {
 				var num = numbersArray[j]["value"];
-				num = num.replace("(", "");
-				num = num.replace(")", "");
-				num = num.replace("-", "");
-				num = num.replace(" ", "");
+				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return contactsArray[i]['displayName'];
 				}
