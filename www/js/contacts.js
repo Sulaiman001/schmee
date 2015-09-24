@@ -15,8 +15,8 @@ function defaultContacts(contactsArray) {
 }
 
 function defaultEmergency(contactsArray, idx) {
-	if (contactsArray[idx].alerts == undefined) {
-		contactsArray[idx].alerts = default_emergency;
+	if (contactsArray[idx].emergency == undefined) {
+		contactsArray[idx].emergency = default_emergency;
 	}
 	return contactsArray;
 }

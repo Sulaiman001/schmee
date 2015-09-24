@@ -258,6 +258,7 @@
             function initApp() {
                 if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
                 
+                // SMS Arrived
                 document.addEventListener('onSMSArrive', function(e){
                     var data = e.data;
                     
@@ -273,24 +274,23 @@
                     toggleIntercept();
                 }
 
+                // Set location on notification click
                 document.addEventListener('deviceready', function(){
                     cordova.plugins.notification.local.onclick = function (notification) {
                         location.href="index.html";
                     };
                 }, false);
 
+                // Background Mode
                 document.addEventListener('deviceready', function () {
-                    // Android customization
-                    cordova.plugins.backgroundMode.setDefaults({ text:'Doing heavy tasks.'});
-                    // Enable background mode
+                    cordova.plugins.backgroundMode.setDefaults({ text:'Watching incoming SMS.'});
+
                     cordova.plugins.backgroundMode.enable();
 
-                    // Called when background mode has been activated
                     cordova.plugins.backgroundMode.onactivate = function () {
                         setTimeout(function () {
-                            // Modify the currently displayed notification
                             cordova.plugins.backgroundMode.configure({
-                                text:'Running in background for more than 5s now.'
+                                text:'Watching incoming SMS in the background.'
                             });
                         }, 5000);
                     }
