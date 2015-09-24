@@ -79,22 +79,26 @@
       <ion-view title="Contacts" id='contactsView'>
         <ion-content>
             <ion-list>
-                <ion-item ng-repeat="contact in contacts"
-                                ng-class-even="'even'"
-                                ng-class-odd="'odd'">
+                <ion-item ng-repeat="contact in contacts">
                     <h2>{{contact.displayName}}</h2>
 
-                    <ion-toggle ng-model="contact.alerts"
-                                       ng-checked="contact.alerts"
-                                       ng-clicked="toggleAlert(displayName)">
-                      Accept Alert ☎
-                    </ion-toggle>
+                    <ion-checkbox ng-model="contact.alerts"
+                                  ng-checked="contact.alerts"
+                                  ng-clicked="toggleAlert(displayName)">
+                      Accept Alert 👂 or !alert
+                    </ion-checkbox>
 
-                    <ion-toggle ng-model="contact.silence"
-                                       ng-checked="contact.silence"
-                                       ng-clicked="toggleSilence(contact.displayName)">
-                      Accept Silence 😶
-                    </ion-toggle>
+                    <ion-checkbox ng-model="contact.silence"
+                                  ng-checked="contact.silence"
+                                  ng-clicked="toggleSilence(contact.displayName)">
+                      Accept Silence 😶 or !silent
+                    </ion-checkbox>
+
+                    <ion-checkbox ng-model="contact.emergency"
+                                  ng-checked="contact.emergency"
+                                  ng-clicked="toggleEmergency(contact.displayName)">
+                      Accept Emergency ❗ or !emergency
+                    </ion-checkbox>
                 </ion-item>
             </ion-list>
         </ion-content>
@@ -148,8 +152,19 @@
                 }
             }
 
-            scheduleAlert = function (txt, type, from) {
-                // var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+            scheduleEmergency = function(txt, type, from) {
+                cordova.plugins.notification.local.add({
+                    id: 1,
+                    text: txt,
+                    title: type + " from " + from,
+                    icon: 'file://favicon.png',
+                    sound: 'file://emergency.mp3'
+                });
+
+                showToast(txt);
+            }
+
+            scheduleAlert = function(txt, type, from) {
                 cordova.plugins.notification.local.add({
                     id: 1,
                     text: txt,
@@ -160,8 +175,7 @@
                 showToast(txt);
             };
 
-            scheduleSilent = function (txt, type, from) {
-                // var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+            scheduleSilent = function(txt, type, from) {
                 cordova.plugins.notification.local.add({
                     id: 1,
                     text: txt,
@@ -187,23 +201,37 @@
                 if (isKnownContact(window.contacts, fromNumber)) {
                     var fromName = getDisplayName(fromNumber);
                     // Known Contacts
-                    if (shouldAlert(msg)) {
-                        if (acceptAlerts(window.contacts, fromNumber)) {
-                            // alert("Known Contact with alert permission, alert found.");
-                            scheduleAlert(msg, "Alert", fromName);
+                    if (shouldEmergency(msg)) {
+                        // Emergency Override
+                        if (acceptEmergency(window.contacts, fromNumber)) {
+                            // alert("Known Contact with emergency permission, emergency found.");
+                            scheduleAlert(msg, "Emergency", fromName);
                         } else {
-                            // alert("Known Contact without alert permission, alert found.");
+                            // alert("Known Contact without emergency permission, emergency found.");
+                        }
+                    } else {
+                        if (shouldAlert(msg)) {
+                            // Alert Override
+                            if (acceptAlerts(window.contacts, fromNumber)) {
+                                // alert("Known Contact with alert permission, alert found.");
+                                scheduleAlert(msg, "Alert", fromName);
+                            } else {
+                                // alert("Known Contact without alert permission, alert found.");
+                            }
+                        } else {
+                            // Silence
+                            if (shouldSilence(msg)) {
+                                if (acceptSilence(window.contacts, fromNumber)) {
+                                    // alert("Known Contact with silence permission, silence found.");
+                                    scheduleSilent(msg, "Silence", fromName);
+                                } else {
+                                    // alert("Known Contact without silence permission, silence found.");
+                                }
+                            }
                         }
                     }
 
-                    if (shouldSilence(msg)) {
-                        if (acceptSilence(window.contacts, fromNumber)) {
-                            // alert("Known Contact with silence permission, silence found.");
-                            scheduleSilent(msg, "Silence", fromName);
-                        } else {
-                            // alert("Known Contact without silence permission, silence found.");
-                        }
-                    }
+                    
                 } else {
                     // Unknown Contacts
                     if (shouldAlert(msg)) {
@@ -232,6 +260,7 @@
                 
                 document.addEventListener('onSMSArrive', function(e){
                     var data = e.data;
+                    
                     smsList.push( data );
                     
                     updateStatus('SMS arrived, count: ' + smsList.length );
@@ -248,6 +277,23 @@
                     cordova.plugins.notification.local.onclick = function (notification) {
                         location.href="index.html";
                     };
+                }, false);
+
+                document.addEventListener('deviceready', function () {
+                    // Android customization
+                    cordova.plugins.backgroundMode.setDefaults({ text:'Doing heavy tasks.'});
+                    // Enable background mode
+                    cordova.plugins.backgroundMode.enable();
+
+                    // Called when background mode has been activated
+                    cordova.plugins.backgroundMode.onactivate = function () {
+                        setTimeout(function () {
+                            // Modify the currently displayed notification
+                            cordova.plugins.backgroundMode.configure({
+                                text:'Running in background for more than 5s now.'
+                            });
+                        }, 5000);
+                    }
                 }, false);
             }
             
@@ -272,6 +318,7 @@
                 }
                 if(SMS) SMS.sendSMS(sendto, textmsg, function(){}, function(str){alert(str);});
             }
+
             function listSMS() {
                 updateData('');
                 
@@ -291,6 +338,7 @@
                     updateStatus('error list sms: ' + err);
                 });
             }
+
             function deleteLastSMS() {
                 updateData('');
 
@@ -309,6 +357,7 @@
                     updateStatus('error delete sms: ' + err);
                 });
             }
+
             function restoreAllSMS() {
                 updateData('');
                 
@@ -321,6 +370,7 @@
                     updateStatus('error restore sms: ' + err);
                 });
             }
+
             function startWatch() {
                 if(SMS) SMS.startWatch(function(){
                     update('watching', 'watching started');
@@ -328,6 +378,7 @@
                     updateStatus('failed to start watching');
                 });
             }
+
             function stopWatch() {
                 if(SMS) SMS.stopWatch(function(){
                     update('watching', 'watching stopped');

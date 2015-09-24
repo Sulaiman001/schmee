@@ -164,6 +164,8 @@ var testContacts = [{
 
 
 // Tests
+
+
 function testGetDisplayName() {
 	var displayName = getDisplayName(testContacts, "0835592468891");
 	if (displayName == "Glen Baker") {

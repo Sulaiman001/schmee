@@ -1,9 +1,19 @@
 // Parses SMS messages for valid emojis
 // Written by Mocha Dick
 
-var alert_emoji = "!alert";
-var silence_emoji = "!silent";
-var emergency_emoji = "!emergency"
+var alert_emoji = "👂";
+var silence_emoji = "😶";
+var emergency_emoji = "❗";
+var schedule_emoji = "";
+
+
+
+var alert_emojis = ["!alert", alert_emoji];
+var silence_emojis = ["!silent", silence_emoji];
+var emergency_emojis = ["!emergency", emergency_emoji];
+
+var schedule_emojis = ["!schedule", schedule_emoji];
+
 
 /* Function count the occurrences of substring in a string;
  * @param {String} string   Required. The string;
@@ -22,6 +32,33 @@ function occurrences(string, subString, allowOverlapping){
         if(pos>=0){ n++; pos+=step; } else break;
     }
     return(n);
+}
+
+function parseAlert(sms) {
+    for (i=0;i<alert_emojis.length;i++) {
+        if (sms.indexOf(alert_emojis[i]) > 0) {
+            return true;
+        }
+    }
+    return false
+}
+
+function parseEmergency(sms) {
+    for (i=0;i<emergency_emojis.length;i++) {
+        if (sms.indexOf(emergency_emojis[i]) > 0) {
+            return true;
+        }
+    }
+    return false
+}
+
+function parseSilence(sms) {
+    for (i=0;i<silence_emojis.length;i++) {
+        if (sms.indexOf(silence_emojis[i]) > 0) {
+            return true;
+        }
+    }
+    return false
 }
 
 /* Function to return the dominant valid emoji in a given string.
@@ -49,25 +86,17 @@ function parseEmoji(sms) {
     }
 }
 
-function shouldEmoji(sms, check_emoji) {
-    var emoji = parseEmoji(sms);
-    if (emoji == check_emoji) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function shouldEmergency(sms) {
-    return shouldEmoji(sms, emergency_emoji);
+    return parseEmergency(sms);
 }
 
 function shouldAlert(sms) {
-    return shouldEmoji(sms, alert_emoji);
+    return parseAlert(sms);
 }
 
 function shouldSilence(sms) {
-    return shouldEmoji(sms, silence_emoji);
+    return parseSilence(sms);
 }
 
 // Tests
@@ -85,31 +114,31 @@ function parseEmojiTest() {
 
     var return_emoji = "";
     console.log("Testing parseEmoji.js...")
-    return_emoji = parseEmoji(testEmergencySMS);
-    if (return_emoji != emergency_emoji) {
+
+    if (parseEmergency(testEmergencySMS)) {
+        console.log("+  Success!  Emergency emoji identified");
+    } else {
         console.log("+  Error identifying emergency emoji");
         success = false;
         errorCount += 1;
-    } else {
-        console.log("+  Success!  Emergency emoji identified");
     }
 
-    return_emoji = parseEmoji(testAlertSMS);
-    if (return_emoji != alert_emoji) {
+
+    if (parseAlert(testAlertSMS)) {
+        console.log("+  Success!  Alert emoji identified");
+    } else {
         console.log("+  Error identifying alert emoji");
         success = false;
         errorCount += 1;
-    } else {
-        console.log("+  Success!  Alert emoji identified");
     }
 
-    return_emoji = parseEmoji(testSilentSMS);
-    if (return_emoji != silence_emoji) {
+
+    if (parseSilence(testSilentSMS)) {
+        console.log("+  Success!  Silence emoji identified");
+    } else {
         console.log("+  Error identifying silence emoji");
         success = false;
         errorCount += 1;
-    } else {
-        console.log("+  Success!  Silence emoji identified");
     }
 
     return_emoji = parseEmoji(testNoEmoji);

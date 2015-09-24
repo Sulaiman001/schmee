@@ -34,6 +34,10 @@ angular.module('schmee', ['ionic', 'ngCordova'])
     toggleAlertContact(window.contacts, displayName);
   }
 
+  $scope.toggleEmergency = function(displayName) {
+    toggleEmergencyContact(window.contacts, displayName);
+  }
+
   $scope.init = function () {
     $scope.loadContacts();
   };
