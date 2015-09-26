@@ -15,6 +15,7 @@ function stripNumber(num) {
 
 
 function defaultContacts(contactsArray) {
+	// Initializes default settings on the given contactsArray
 	for (i = 0; i < contactsArray.length; i++) {
 		contactsArray = defaultAlert(contactsArray, i);
 		contactsArray = defaultSilence(contactsArray, i);
@@ -50,7 +51,6 @@ function isTrue(contactsArray, phoneNumber, field) {
 		var numbersArray = contactsArray[i].phoneNumbers;
 		if (numbersArray instanceof Array) {
 			for (j = 0; j < numbersArray.length; j++) {
-				
 				var num = numbersArray[j]["value"];
 				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {

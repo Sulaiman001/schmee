@@ -62,7 +62,11 @@
                 <button id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
                 <button onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
                 <div id='status'></div><hr/>
-                <div id='data' style='text-align:left;'></div>
+                <ul>
+                <div id='data' style='text-align:left;'>
+
+                </div>
+                </ul>
             </div>
 
             <div id="test"></div>
@@ -103,6 +107,8 @@
 
        <script type='text/javascript'>
             var debug = true;
+
+            var notificationID = 1;
 
             function onLoad() {
                 if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
@@ -148,8 +154,8 @@
             }
 
             scheduleEmergency = function(txt, type, from) {
-                cordova.plugins.notification.local.add({
-                    id: 1,
+                cordova.plugins.notification.local.schedule({
+                    id: notificationID,
                     text: txt,
                     title: type + " from " + from,
                     icon: 'file://favicon.png',
@@ -157,35 +163,33 @@
                 });
 
                 showToast(txt);
+                notificationID = notificationID + 1;
             }
 
             scheduleAlert = function(txt, type, from) {
-                cordova.plugins.notification.local.add({
-                    id: 1,
+                cordova.plugins.notification.local.schedule({
+                    id: notificationID,
                     text: txt,
                     title: type + " from " + from,
                     icon: 'file://favicon.png'
                 });
 
                 showToast(txt);
+                notificationID = notificationID + 1;
             };
 
             scheduleSilent = function(txt, type, from) {
-                cordova.plugins.notification.local.add({
-                    id: 1,
+                cordova.plugins.notification.local.schedule({
+                    id: notificationID,
                     text: txt,
                     title: type + " from " + from,
                     icon: 'file://favicon.png',
                     sound: null
                 });
+                notificationID = notificationID + 1;
             };
 
             var default_notify = true;
-
-
-            function toggleDefaultNotify(){
-                default_notify = ! default_notify;
-            }
 
             // we will store the intercepted SMS here for later restore
             var smsList = [];
@@ -193,14 +197,18 @@
             var watching = false;
 
             function schmeeNotifications(data) {
-                var divdata = $('div#data');
-                divdata.html( divdata.html() + JSON.stringify( data ) );
-
                 var fromNumber = data.address;
                 var msg = data.body;
+                var fromName = getDisplayName(window.contacts, fromNumber);
+
+                var divdata = $('div#data');
+                var htmldata = "<li>"+ msg + "<br>" + fromName +"</li>";
+                divdata.html(divdata.html() + htmldata);
+
+                
 
                 if (isKnownContact(window.contacts, fromNumber)) {
-                    var fromName = getDisplayName(window.contacts, fromNumber);
+                    
 
                     // Known Contacts
                     if (shouldEmergency(msg)) {
@@ -406,6 +414,10 @@
                 }
                 
                 if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
+            }
+
+            function toggleDefaultNotify(){
+                default_notify = ! default_notify;
             }
         </script>
     </body>
