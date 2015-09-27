@@ -1,7 +1,7 @@
 // Schmee Notification Improvements by Mocha Dick
 var debug = true;
 
-angular.module('schmee', ['ionic', 'ngCordova'])
+angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
 .controller('SchmeeCtrl', function($scope) {
 

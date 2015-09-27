@@ -14,6 +14,72 @@ function stripNumber(num) {
 }
 
 
+function onContactsLoadSuccess(contacts) {
+    // js = callback hell
+    // window.contacts = defaultContacts(contacts);
+    var mergedContacts = mergeWithSavedContacts(contacts);
+    saveContacts(mergedContacts);
+    // $('#test').html(JSON.stringify(window.contacts));
+}
+
+function onContactsLoadError(contactError) {
+    // js = callback hell
+    alert("Error loading contacts", contactError);
+}
+
+function loadContacts() {
+    if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
+        var options = new ContactFindOptions();
+        options.filter = "";          // empty search string returns all contacts
+        options.multiple = true;      // return multiple results
+        filter = ["displayName", "name", "nickname", "id", "phoneNumbers"];   // return contact.displayName 
+        navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
+    } else {
+        // window.contacts = defaultContacts(testContacts);
+        var mergedContacts = mergeWithSavedContacts(testContacts);
+	    saveContacts(mergedContacts);
+        // $('#test').html(JSON.stringify(window.contacts));
+    }
+}
+
+function loadSavedContacts() {
+	return window.localStorage.getItem('contacts');
+}
+
+function saveContacts(contactsArray) {
+	window.localStorage.setItem('contacts', contactsArray);
+}
+
+function mergeWithSavedContacts(contactsArray) {
+	// check for matching ids
+	// use settings information from savedContacts, update entry with
+	// any new information from the given contactsArray
+	var savedContacts = loadSavedContacts();
+	var newContacts = [];
+	for (var i=0; i < contactsArray.length; ++i) {
+		var matchFound = false;
+		for(var j=0; j < savedContacts.length; ++j ) {
+			if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
+				matchFound = true;
+				savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
+				savedContacts[j]['name'] = contactsArray[i]['name'];
+				savedContacts[j]['nickname'] = contactsArray[i]['nickname'];
+				savedContacts[j]['phoneNumbers'] = contactsArray[i]['phoneNumbers'];
+			}
+		}
+
+		if (!matchFound) {
+			newContacts.push(contactsArray[i])
+		}
+	}
+	
+	newContacts = defaultContacts(newContacts);
+
+	return savedContacts.concat(newContacts);
+
+}
+
+
 function defaultContacts(contactsArray) {
 	// Initializes default settings on the given contactsArray
 	for (i = 0; i < contactsArray.length; i++) {
@@ -117,6 +183,7 @@ function toggleContactField(contactsArray, displayName, field) {
 	for(i=0;i<contactsArray.length;i++){
 		if (contactsArray[i]['displayName'] == displayName) {
 			contactsArray[i][field] = !contactsArray[i][field];
+			saveContacts(contactsArray);
 		}
 	}
 }

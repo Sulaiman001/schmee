@@ -10,9 +10,12 @@
         <link rel="shortcut icon" type="image/png" href="favicon.png">
 
         <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+        <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
 
         <!-- Library Scripts -->
         <script src="lib/ionic/js/ionic.bundle.js"></script>
+        <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
+
         <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.min.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
@@ -42,13 +45,13 @@
 
 
     <script id="templates/tabs.html" type="text/ng-template">
-      <ion-tabs class="tabs-icon-top tabs-color-active-positive">
+      <ion-tabs class="tabs-icon-top tabs-positive">
 
-        <ion-tab title="Schmee" icon="ion-home" href="#/tab/home">
+        <ion-tab title="Messages" icon="ion-email" href="#/tab/home">
           <ion-nav-view name="home-tab"></ion-nav-view>
         </ion-tab>
 
-        <ion-tab title="Contacts" icon="ion-ios-world" ui-sref="tabs.contacts">
+        <ion-tab title="Contacts" icon="ion-person-stalker" ui-sref="tabs.contacts">
           <ion-nav-view name="contacts-tab"></ion-nav-view>
         </ion-tab>
 
@@ -56,11 +59,11 @@
     </script>
 
     <script id="templates/home.html" type="text/ng-template">
-      <ion-view view-title="Schmee">
+      <ion-view view-title="Messages">
         <ion-content class="padding">
             <div id="fullpage">
-                <button id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
-                <button onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
+                <button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
+                <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
                 <div id='status'></div><hr/>
                 <ul>
                 <div id='data' style='text-align:left;'>
@@ -127,31 +130,7 @@
 
                 loadContacts();
             }
-
-            function onContactsLoadSuccess(contacts) {
-                // js = callback hell
-                window.contacts = defaultContacts(contacts);
-                // $('#test').html(JSON.stringify(window.contacts));
-            }
-
-            function onContactsLoadError(contactError) {
-                // js = callback hell
-                alert("Error loading contacts", contactError);
-            }
-
-
-            function loadContacts() {
-                if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
-                    var options = new ContactFindOptions();
-                    options.filter = "";          // empty search string returns all contacts
-                    options.multiple = true;      // return multiple results
-                    filter = ["displayName", "name", "nickname", "phoneNumbers"];   // return contact.displayName 
-                    navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
-                } else {
-                    window.contacts = defaultContacts(testContacts);
-                    // $('#test').html(JSON.stringify(window.contacts));
-                }
-            }
+            
 
             scheduleEmergency = function(txt, type, from) {
                 cordova.plugins.notification.local.schedule({
