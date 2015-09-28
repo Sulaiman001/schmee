@@ -19,7 +19,7 @@ function onContactsLoadSuccess(contacts) {
     // window.contacts = defaultContacts(contacts);
     var mergedContacts = mergeWithSavedContacts(contacts);
     saveContacts(mergedContacts);
-    $('#test').html(JSON.stringify(mergedContacts));
+    // $('#test').html(JSON.stringify(mergedContacts));
 }
 
 function onContactsLoadError(contactError) {
@@ -36,7 +36,7 @@ function loadContacts() {
         navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
     } else {
         // window.contacts = defaultContacts(testContacts);
-        var mergedContacts = mergeWithSavedContacts(testContacts);
+        var mergedContacts = mergeWithSavedContacts(testContacts2);
 	    saveContacts(mergedContacts);
 	    // window.contacts = mergedContacts;
         // $('#test').html(JSON.stringify(window.contacts));
@@ -44,7 +44,7 @@ function loadContacts() {
 }
 
 function loadSavedContacts() {
-	var contacts = window.localStorage.getItem('contacts')
+	var contacts = localStorage.getItem('contacts')
 	if (typeof contacts !== undefined && contacts !== "undefined") {
 		return JSON.parse(contacts);
 	}
@@ -52,7 +52,7 @@ function loadSavedContacts() {
 }
 
 function saveContacts(contactsArray) {
-	window.localStorage.setItem('contacts', JSON.stringify(contactsArray));
+	localStorage.setItem('contacts', JSON.stringify(contactsArray));
 }
 
 function mergeWithSavedContacts(contactsArray) {
@@ -65,7 +65,7 @@ function mergeWithSavedContacts(contactsArray) {
 		for (i = 0; i < contactsArray.length; ++i) {
 			var matchFound = false;
 			if (savedContacts != null) {
-				for(j = 0; j < savedContacts.length; ++j ) {
+				for(j = 0; j < savedContacts.length && matchFound == false; ++j ) {
 					if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
 						matchFound = true;
 						savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
@@ -190,7 +190,8 @@ function acceptSilence(contactsArray, phoneNumber) {
 }
 
 
-function toggleContactField(contactsArray, id, field) {
+function toggleContactField(id, field) {
+	var contactsArray = loadSavedContacts();
 	for(i=0;i<contactsArray.length;i++){
 		if (contactsArray[i]['id'] == id) {
 			contactsArray[i][field] = !contactsArray[i][field];
@@ -199,20 +200,22 @@ function toggleContactField(contactsArray, id, field) {
 	}
 }
 
-function toggleEmergencyContact(contactsArray, id) {
-	toggleContactField(contactsArray, id, "emergency");
+function toggleEmergencyContact(id) {
+	toggleContactField(id, "emergency");
 }
 
-function toggleAlertContact(contactsArray, id) {
-	toggleContactField(contactsArray, id, "alerts");
+function toggleAlertContact(id) {
+	toggleContactField(id, "alerts");
 }
 
-function toggleSilenceContact(contactsArray, id) {
-	toggleContactField(contactsArray, id, "silence");
+function toggleSilenceContact(id) {
+	toggleContactField(id, "silence");
 }
+
+// Tests
 
 var testContacts = [{
-		"id": "2",
+		"id": "1",
       	"displayName": "Glen Baker",
       	"emergency": true,
       	"alerts": true,
@@ -224,7 +227,7 @@ var testContacts = [{
 	    }]
 
     },
-    { "id": "1",
+    { "id": "2",
       "displayName": 'Robert Hawk',
 	  "emergency": true,
       "alerts": false,
@@ -243,8 +246,28 @@ var testContacts = [{
     }
 ]
 
+var testContacts2 = [{
+		"id": "4",
+      	"displayName": "Datastream Cowboy",
+      	"phoneNumbers": [{
+	      	"id": "5",
+	      	"value": "(559) 999-9999",
+	      	"type": "mobile"
+	    }]
 
-// Tests
+    },
+    { "id": "2",
+      "displayName": 'Robert Hawk',
+    },
+    { "id": "3",
+      "displayName": 'Mocha Dick',
+      "phoneNumbers": [{
+	      	"id": "4",
+	      	"value": "(559) 888-8888",
+	      	"type": "mobile"
+	    }]
+    }
+]
 
 
 function testGetDisplayName() {
@@ -265,10 +288,12 @@ function testGetDisplayName() {
 
 
 function testToggleAlerts() {
-	var pre_toggle = acceptAlerts(testContacts, "0835598888888");
-	toggleAlertContact(testContacts, 3);
-	var post_toggle = acceptAlerts(testContacts, "0835598888888");
-	if (pre_toggle != post_toggle) {
+	var preToggleContacts = loadSavedContacts();
+	var preToggle = acceptAlerts(preToggleContacts, "0835598888888");
+	toggleAlertContact(3);
+	var postToggleContacts = loadSavedContacts();
+	var postToggle = acceptAlerts(postToggleContacts, "0835598888888");
+	if (preToggle != postToggle) {
 		console.log("+ Success!  toggleAlertContact working as expected");
 	} else {
 		console.log("- Failure!  toggleAlertContact not working as expected");
@@ -277,10 +302,12 @@ function testToggleAlerts() {
 
 
 function testToggleSilence() {
-	var pre_toggle = acceptSilence(testContacts, "0835598888888");
-	toggleSilenceContact(testContacts, 3);
-	var post_toggle = acceptSilence(testContacts, "0835598888888");
-	if (pre_toggle != post_toggle) {
+	var preToggleContacts = loadSavedContacts();
+	var preToggle = acceptSilence(preToggleContacts, "0835598888888");
+	toggleSilenceContact(3);
+	var postToggleContacts = loadSavedContacts();
+	var postToggle = acceptSilence(postToggleContacts, "0835598888888");
+	if (preToggle != postToggle) {
 		console.log("+ Success!  toggleSilenceContact working as expected");
 	} else {
 		console.log("- Failure!  toggleSilenceContact not working as expected");
@@ -289,10 +316,12 @@ function testToggleSilence() {
 
 
 function testToggleEmergency() {
-	var pre_toggle = acceptEmergency(testContacts, "0835598888888");
-	toggleEmergencyContact(testContacts, 3);
-	var post_toggle = acceptEmergency(testContacts, "0835598888888");
-	if (pre_toggle != post_toggle) {
+	var preToggleContacts = loadSavedContacts();
+	var preToggle = acceptEmergency(preToggleContacts, "0835598888888");
+	toggleEmergencyContact(3);
+	var postToggleContacts = loadSavedContacts();
+	var postToggle = acceptEmergency(postToggleContacts, "0835598888888");
+	if (preToggle != postToggle) {
 		console.log("+ Success!  toggleEmergencyContact working as expected");
 	} else {
 		console.log("- Failure!  toggleEmergencyContact not working as expected");

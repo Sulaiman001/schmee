@@ -17,24 +17,22 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
           saveContacts($scope.contacts);
         });
       } else {
-        $scope.contacts = mergeWithSavedContacts(testContacts);
+        // saveContacts(testContacts);
+        $scope.contacts = mergeWithSavedContacts(testContacts2);
         saveContacts($scope.contacts);
       }
   }
 
   $scope.toggleSilence = function(id) {
-    var contacts = loadSavedContacts();
-    toggleSilenceContact(contacts, id);
+    toggleSilenceContact(id);
   }
 
   $scope.toggleAlert = function(id) {
-    var contacts = loadSavedContacts();
-    toggleAlertContact(contacts, id);
+    toggleAlertContact(id);
   }
 
   $scope.toggleEmergency = function(id) {
-    var contacts = loadSavedContacts();
-    toggleEmergencyContact(contacts, id);
+    toggleEmergencyContact(id);
   }
 
   $scope.init = function () {
