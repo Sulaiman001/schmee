@@ -16,7 +16,6 @@ function stripNumber(num) {
 
 function onContactsLoadSuccess(contacts) {
     // js = callback hell
-    // window.contacts = defaultContacts(contacts);
     var mergedContacts = mergeWithSavedContacts(contacts);
     saveContacts(mergedContacts);
     // $('#test').html(JSON.stringify(mergedContacts));
@@ -35,11 +34,8 @@ function loadContacts() {
         filter = ["displayName", "name", "nickname", "id", "phoneNumbers"];   // return contact.displayName 
         navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
     } else {
-        // window.contacts = defaultContacts(testContacts);
-        var mergedContacts = mergeWithSavedContacts(testContacts2);
+        var mergedContacts = mergeWithSavedContacts(testContacts);
 	    saveContacts(mergedContacts);
-	    // window.contacts = mergedContacts;
-        // $('#test').html(JSON.stringify(window.contacts));
     }
 }
 
