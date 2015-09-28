@@ -11,31 +11,30 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   var isAndroid = ionic.Platform.isAndroid();
 
   $scope.loadContacts = function() {
-    if (window.contacts == undefined) {
       if (isAndroid) {
         $cordovaContacts.find({multiple: true}).then(function(res) {
-          $scope.contacts  = defaultContacts(res);
+          $scope.contacts = mergeWithSavedContacts(res);
+          saveContacts($scope.contacts);
         });
       } else {
-        $scope.contacts = testContacts;
-      
-        $scope.contacts = defaultContacts($scope.contacts);
+        $scope.contacts = mergeWithSavedContacts(testContacts);
+        saveContacts($scope.contacts);
       }
-    } else {
-      $scope.contacts = window.contacts;
-    }
   }
 
-  $scope.toggleSilence = function(displayName) {
-    toggleSilenceContact(window.contacts, displayName);
+  $scope.toggleSilence = function(id) {
+    var contacts = loadSavedContacts();
+    toggleSilenceContact(contacts, id);
   }
 
-  $scope.toggleAlert = function(displayName) {
-    toggleAlertContact(window.contacts, displayName);
+  $scope.toggleAlert = function(id) {
+    var contacts = loadSavedContacts();
+    toggleAlertContact(contacts, id);
   }
 
-  $scope.toggleEmergency = function(displayName) {
-    toggleEmergencyContact(window.contacts, displayName);
+  $scope.toggleEmergency = function(id) {
+    var contacts = loadSavedContacts();
+    toggleEmergencyContact(contacts, id);
   }
 
   $scope.init = function () {

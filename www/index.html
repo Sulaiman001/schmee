@@ -25,12 +25,7 @@
         <script src="js/contacts.js"></script>
         <script src="js/app.js"></script>
 
-        <style type="text/css">
-            body { width:100%; height:100%; margin:0; padding:0; overflow:hidden; background-color:#eee; }
-            div#fullpage { width:100%; height:100%; margin:0; padding:0; border:0px solid red; text-align:center; vertical-align:middle; }
-            div#data { width:100%; }
-            button { font-size: 18px; }
-        </style>
+        <link rel="stylesheet" href="css/base.css">
     </head>
     <body ng-app="schmee" onload="onLoad()">
         
@@ -45,7 +40,7 @@
 
 
     <script id="templates/tabs.html" type="text/ng-template">
-      <ion-tabs class="tabs-icon-top tabs-positive">
+      <ion-tabs class="tabs-icon-top tabs-striped">
 
         <ion-tab title="Messages" icon="ion-email" href="#/tab/home">
           <ion-nav-view name="home-tab"></ion-nav-view>
@@ -62,7 +57,7 @@
       <ion-view view-title="Messages">
         <ion-content class="padding">
             <div id="fullpage">
-                <button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
+                <!--<button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>-->
                 <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
                 <div id='status'></div><hr/>
                 <ul>
@@ -86,19 +81,19 @@
 
                     <ion-checkbox ng-model="contact.alerts"
                                   ng-checked="contact.alerts"
-                                  ng-clicked="toggleAlert(displayName)">
+                                  ng-clicked="toggleAlert(contact.id)">
                       Accept !alert 👂
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.silence"
                                   ng-checked="contact.silence"
-                                  ng-clicked="toggleSilence(contact.displayName)">
+                                  ng-clicked="toggleSilence(contact.id)">
                       Accept !silent 😶
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.emergency"
                                   ng-checked="contact.emergency"
-                                  ng-clicked="toggleEmergency(contact.displayName)">
+                                  ng-clicked="toggleEmergency(contact.id)">
                       Accept !emergency ❗
                     </ion-checkbox>
                 </ion-item>
@@ -176,23 +171,20 @@
             var watching = false;
 
             function schmeeNotifications(data) {
+                var contacts = loadSavedContacts();
                 var fromNumber = data.address;
                 var msg = data.body;
-                var fromName = getDisplayName(window.contacts, fromNumber);
+                var fromName = getDisplayName(contacts, fromNumber);
 
                 var divdata = $('div#data');
                 var htmldata = "<li>"+ msg + "<br>" + fromName +"</li>";
                 divdata.html(divdata.html() + htmldata);
 
-                
-
-                if (isKnownContact(window.contacts, fromNumber)) {
-                    
-
+                if (isKnownContact(contacts, fromNumber)) {                    
                     // Known Contacts
                     if (shouldEmergency(msg)) {
                         // Emergency Override
-                        if (acceptEmergency(window.contacts, fromNumber)) {
+                        if (acceptEmergency(contacts, fromNumber)) {
                             // alert("Known Contact with emergency permission, emergency found.");
                             scheduleAlert(msg, "Emergency", fromName);
                         } else {
@@ -201,7 +193,7 @@
                     } else {
                         if (shouldAlert(msg)) {
                             // Alert Override
-                            if (acceptAlerts(window.contacts, fromNumber)) {
+                            if (acceptAlerts(contacts, fromNumber)) {
                                 // alert("Known Contact with alert permission, alert found.");
                                 scheduleAlert(msg, "Alert", fromName);
                             } else {
@@ -210,7 +202,7 @@
                         } else {
                             // Silence
                             if (shouldSilence(msg)) {
-                                if (acceptSilence(window.contacts, fromNumber)) {
+                                if (acceptSilence(contacts, fromNumber)) {
                                     // alert("Known Contact with silence permission, silence found.");
                                     scheduleSilent(msg, "Silence", fromName);
                                 } else {

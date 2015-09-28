@@ -116,38 +116,38 @@ function parseEmojiTest() {
     console.log("Testing parseEmoji.js...")
 
     if (parseEmergency(testEmergencySMS)) {
-        console.log("+  Success!  Emergency emoji identified");
+        console.log("+ Success!  Emergency emoji identified");
     } else {
-        console.log("+  Error identifying emergency emoji");
+        console.log("- Error identifying emergency emoji");
         success = false;
         errorCount += 1;
     }
 
 
     if (parseAlert(testAlertSMS)) {
-        console.log("+  Success!  Alert emoji identified");
+        console.log("+ Success!  Alert emoji identified");
     } else {
-        console.log("+  Error identifying alert emoji");
+        console.log("- Error identifying alert emoji");
         success = false;
         errorCount += 1;
     }
 
 
     if (parseSilence(testSilentSMS)) {
-        console.log("+  Success!  Silence emoji identified");
+        console.log("+ Success!  Silence emoji identified");
     } else {
-        console.log("+  Error identifying silence emoji");
+        console.log("- Error identifying silence emoji");
         success = false;
         errorCount += 1;
     }
 
     return_emoji = parseEmoji(testNoEmoji);
     if (return_emoji != null) {
-        console.log("+  Error identifying emojiless text");
+        console.log("- Error identifying emojiless text");
         success = false;
         errorCount += 1;
     } else {
-        console.log("+  Success!  Emojiless text identified");
+        console.log("+ Success!  Emojiless text identified");
     }
 
     if (success) {

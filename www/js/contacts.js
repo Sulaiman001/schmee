@@ -19,7 +19,7 @@ function onContactsLoadSuccess(contacts) {
     // window.contacts = defaultContacts(contacts);
     var mergedContacts = mergeWithSavedContacts(contacts);
     saveContacts(mergedContacts);
-    // $('#test').html(JSON.stringify(window.contacts));
+    $('#test').html(JSON.stringify(mergedContacts));
 }
 
 function onContactsLoadError(contactError) {
@@ -38,16 +38,21 @@ function loadContacts() {
         // window.contacts = defaultContacts(testContacts);
         var mergedContacts = mergeWithSavedContacts(testContacts);
 	    saveContacts(mergedContacts);
+	    // window.contacts = mergedContacts;
         // $('#test').html(JSON.stringify(window.contacts));
     }
 }
 
 function loadSavedContacts() {
-	return window.localStorage.getItem('contacts');
+	var contacts = window.localStorage.getItem('contacts')
+	if (typeof contacts !== undefined && contacts !== "undefined") {
+		return JSON.parse(contacts);
+	}
+	return null;
 }
 
 function saveContacts(contactsArray) {
-	window.localStorage.setItem('contacts', contactsArray);
+	window.localStorage.setItem('contacts', JSON.stringify(contactsArray));
 }
 
 function mergeWithSavedContacts(contactsArray) {
@@ -56,27 +61,33 @@ function mergeWithSavedContacts(contactsArray) {
 	// any new information from the given contactsArray
 	var savedContacts = loadSavedContacts();
 	var newContacts = [];
-	for (var i=0; i < contactsArray.length; ++i) {
-		var matchFound = false;
-		for(var j=0; j < savedContacts.length; ++j ) {
-			if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
-				matchFound = true;
-				savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
-				savedContacts[j]['name'] = contactsArray[i]['name'];
-				savedContacts[j]['nickname'] = contactsArray[i]['nickname'];
-				savedContacts[j]['phoneNumbers'] = contactsArray[i]['phoneNumbers'];
+	if (contactsArray != null) {
+		for (i = 0; i < contactsArray.length; ++i) {
+			var matchFound = false;
+			if (savedContacts != null) {
+				for(j = 0; j < savedContacts.length; ++j ) {
+					if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
+						matchFound = true;
+						savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
+						savedContacts[j]['name'] = contactsArray[i]['name'];
+						savedContacts[j]['nickname'] = contactsArray[i]['nickname'];
+						savedContacts[j]['phoneNumbers'] = contactsArray[i]['phoneNumbers'];
+					}
+				}
+			}
+
+			if (!matchFound) {
+				newContacts.push(contactsArray[i])
 			}
 		}
-
-		if (!matchFound) {
-			newContacts.push(contactsArray[i])
-		}
 	}
-	
 	newContacts = defaultContacts(newContacts);
 
-	return savedContacts.concat(newContacts);
-
+	if (savedContacts != null) {
+		return savedContacts.concat(newContacts);
+	} else {
+		return newContacts;
+	}
 }
 
 
@@ -179,25 +190,25 @@ function acceptSilence(contactsArray, phoneNumber) {
 }
 
 
-function toggleContactField(contactsArray, displayName, field) {
+function toggleContactField(contactsArray, id, field) {
 	for(i=0;i<contactsArray.length;i++){
-		if (contactsArray[i]['displayName'] == displayName) {
+		if (contactsArray[i]['id'] == id) {
 			contactsArray[i][field] = !contactsArray[i][field];
 			saveContacts(contactsArray);
 		}
 	}
 }
 
-function toggleEmergencyContact(contactsArray, displayName) {
-	toggleContactField(contactsArray, displayName, "emergency");
+function toggleEmergencyContact(contactsArray, id) {
+	toggleContactField(contactsArray, id, "emergency");
 }
 
-function toggleAlertContact(contactsArray, displayName) {
-	toggleContactField(contactsArray, displayName, "alerts");
+function toggleAlertContact(contactsArray, id) {
+	toggleContactField(contactsArray, id, "alerts");
 }
 
-function toggleSilenceContact(contactsArray, displayName) {
-	toggleContactField(contactsArray, displayName, "silence");
+function toggleSilenceContact(contactsArray, id) {
+	toggleContactField(contactsArray, id, "silence");
 }
 
 var testContacts = [{
@@ -241,38 +252,50 @@ function testGetDisplayName() {
 	if (displayName == "Glen Baker") {
 		console.log("+ Success!  getDisplayName worked as expected for first test");
 	} else {
-		console.log("+ Error!  getDisplayName not working properly");
+		console.log("- Error!  getDisplayName not working properly");
 	}
 
 	var secondDisplayName = getDisplayName(testContacts, "0835598888888");
 	if (secondDisplayName == "Mocha Dick") {
 		console.log("+ Success!  getDisplayName worked as expected for second test");
 	} else {
-		console.log("+ Error!  getDisplayName not working properly");
+		console.log("- Error!  getDisplayName not working properly");
 	}
 }
 
 
 function testToggleAlerts() {
 	var pre_toggle = acceptAlerts(testContacts, "0835598888888");
-	toggleAlertContact(testContacts, "Mocha Dick");
+	toggleAlertContact(testContacts, 3);
 	var post_toggle = acceptAlerts(testContacts, "0835598888888");
 	if (pre_toggle != post_toggle) {
 		console.log("+ Success!  toggleAlertContact working as expected");
 	} else {
-		console.log("+ Failure!  toggleAlertContact not working as expected");
+		console.log("- Failure!  toggleAlertContact not working as expected");
 	}
 }
 
 
 function testToggleSilence() {
 	var pre_toggle = acceptSilence(testContacts, "0835598888888");
-	toggleSilenceContact(testContacts, "Mocha Dick");
+	toggleSilenceContact(testContacts, 3);
 	var post_toggle = acceptSilence(testContacts, "0835598888888");
 	if (pre_toggle != post_toggle) {
 		console.log("+ Success!  toggleSilenceContact working as expected");
 	} else {
-		console.log("+ Failure!  toggleSilenceContact not working as expected");
+		console.log("- Failure!  toggleSilenceContact not working as expected");
+	}
+}
+
+
+function testToggleEmergency() {
+	var pre_toggle = acceptEmergency(testContacts, "0835598888888");
+	toggleEmergencyContact(testContacts, 3);
+	var post_toggle = acceptEmergency(testContacts, "0835598888888");
+	if (pre_toggle != post_toggle) {
+		console.log("+ Success!  toggleEmergencyContact working as expected");
+	} else {
+		console.log("- Failure!  toggleEmergencyContact not working as expected");
 	}
 }
 
@@ -282,14 +305,14 @@ function testAcceptAlerts() {
 		console.log("+ Success!  Expected acceptAlerts true");
 	} else {
 		console.log(acceptAlerts(testContacts, "0835592468891"));
-		console.log("+ Failure!  Expected acceptAlerts true");
+		console.log("- Failure!  Expected acceptAlerts true");
 	}
 
 	if (!acceptAlerts(testContacts, "0835598888888")) {
 		console.log("+ Success!  Expected acceptAlerts false");
 	} else {
 		console.log(acceptAlerts(testContacts, "0835598888888"));
-		console.log("+ Failure!  Expected acceptAlerts false");
+		console.log("- Failure!  Expected acceptAlerts false");
 	}
 
 }
@@ -299,14 +322,14 @@ function testAcceptSilence() {
 		console.log("+ Success!  Expected acceptSilence true");
 	} else {
 		console.log(acceptSilence(testContacts, "0835592468891"));
-		console.log("+ Failure!  Expected acceptSilence true");
+		console.log("- Failure!  Expected acceptSilence true");
 	}
 
 	if (!acceptSilence(testContacts, "0835598888888")) {
 		console.log("+ Success!  Expected acceptSilence false");
 	} else {
 		console.log(acceptSilence(testContacts, "0835598888888"));
-		console.log("+ Failure!  Expected acceptSilence false");
+		console.log("- Failure!  Expected acceptSilence false");
 	}
 }
 
@@ -317,6 +340,7 @@ function contactsTest() {
 
 	testToggleAlerts();
 	testToggleSilence();
+	testToggleEmergency();
 
 	testGetDisplayName();
 }
