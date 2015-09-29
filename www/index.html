@@ -1,36 +1,34 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
 
-        <title>Schmee</title>
+    <title>Schmee</title>
 
-        <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
 
-        <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-        <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
 
-        <!-- Library Scripts -->
-        <script src="lib/ionic/js/ionic.bundle.js"></script>
-        <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
+    <!-- Library Scripts -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
 
-        <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.min.js"></script>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
 
-        <!-- App Scripts -->
-        <script src="js/parseEmoji.js"></script>
-        <script src="js/contacts.js"></script>
-        <script src="js/app.js"></script>
+    <!-- App Scripts -->
+    <script src="js/parseEmoji.js"></script>
+    <script src="js/contacts.js"></script>
+    <script src="js/app.js"></script>
 
-        <link rel="stylesheet" href="css/base.css">
-    </head>
-    <body ng-app="schmee" onload="onLoad()">
-        
-        
-            
+    <link rel="stylesheet" href="css/base.css">
+</head>
+<body ng-app="schmee" onload="onLoad()">
+    
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button>
       </ion-nav-back-button>
@@ -48,6 +46,10 @@
 
         <ion-tab title="Contacts" icon="ion-person-stalker" ui-sref="tabs.contacts">
           <ion-nav-view name="contacts-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab title="Settings" icon="ion-gear-a" ui-sref="tabs.settings">
+          <ion-nav-view name="settings-tab"></ion-nav-view>
         </ion-tab>
 
       </ion-tabs>
@@ -81,19 +83,19 @@
 
                     <ion-checkbox ng-model="contact.alerts"
                                   ng-checked="contact.alerts"
-                                  ng-clicked="toggleAlert(contact.id)">
+                                  ng-click="toggleAlert(contact.id)">
                       Accept !alert 👂
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.silence"
                                   ng-checked="contact.silence"
-                                  ng-clicked="toggleSilence(contact.id)">
+                                  ng-click="toggleSilence(contact.id)">
                       Accept !silent 😶
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.emergency"
                                   ng-checked="contact.emergency"
-                                  ng-clicked="toggleEmergency(contact.id)">
+                                  ng-click="toggleEmergency(contact.id)">
                       Accept !emergency ❗
                     </ion-checkbox>
                 </ion-item>
@@ -101,295 +103,318 @@
         </ion-content>
       </ion-view>
     </script>
-       
+    
 
-       <script type='text/javascript'>
-            var debug = true;
+    <script id="templates/settings.html" type="text/ng-template">
+      <ion-view title="Settings" id='settingsView'>
+        <ion-content>
+            <ion-list>
+                <ion-toggle ng-checked="accept_unknown_emergency"
+                            ng-click="toggleAcceptUnknownEmergency()">
+                  Accept !emergency from unknown numbers
+                </ion-toggle>
 
-            var notificationID = 1;
+                <ion-toggle ng-checked="accept_unknown_alert"
+                            ng-click="toggleAcceptUnknownAlert()">
+                  Accept !alert from unknown numbers
+                </ion-toggle>
 
-            function onLoad() {
-                if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
-                    document.addEventListener('deviceready', initApp, false);
-                } else {
-                    updateStatus('Must be run on a mobile device for full functionality.');
-                    
-                    // Test Components
-                    if (debug) {
-                        // parseEmoji.js required
-                        parseEmojiTest();
-                        // contacts.js required
-                        contactsTest();
-                    }
+                <ion-toggle ng-checked="accept_unknown_silent"
+                            ng-click="toggleAcceptUnknownSilent()">
+                  Accept !silent from unknown numbers
+                </ion-toggle>
+            </ion-list>
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script type='text/javascript'>
+        var debug = true;
+
+        var notificationID = 1;
+
+        function onLoad() {
+            if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
+                document.addEventListener('deviceready', initApp, false);
+            } else {
+                updateStatus('Must be run on a mobile device for full functionality.');
+                
+                // Test Components
+                if (debug) {
+                    // parseEmoji.js required
+                    parseEmojiTest();
+                    // contacts.js required
+                    contactsTest();
                 }
-
-                loadContacts();
-            }
-            
-
-            scheduleEmergency = function(txt, type, from) {
-                cordova.plugins.notification.local.schedule({
-                    id: notificationID,
-                    text: txt,
-                    title: type + " from " + from,
-                    icon: 'file://favicon.png',
-                    sound: 'file://emergency.mp3'
-                });
-
-                showToast(txt);
-                notificationID = notificationID + 1;
             }
 
-            scheduleAlert = function(txt, type, from) {
-                cordova.plugins.notification.local.schedule({
-                    id: notificationID,
-                    text: txt,
-                    title: type + " from " + from,
-                    icon: 'file://favicon.png'
-                });
+            loadContacts();
+        }
+        
 
-                showToast(txt);
-                notificationID = notificationID + 1;
-            };
+        scheduleEmergency = function(txt, type, from) {
+            cordova.plugins.notification.local.schedule({
+                id: notificationID,
+                text: txt,
+                title: type + " from " + from,
+                icon: 'file://favicon.png',
+                sound: 'file://emergency.mp3'
+            });
 
-            scheduleSilent = function(txt, type, from) {
-                cordova.plugins.notification.local.schedule({
-                    id: notificationID,
-                    text: txt,
-                    title: type + " from " + from,
-                    icon: 'file://favicon.png',
-                    sound: null
-                });
-                notificationID = notificationID + 1;
-            };
+            showToast(txt);
+            notificationID = notificationID + 1;
+        }
 
-            var default_notify = true;
+        scheduleAlert = function(txt, type, from) {
+            cordova.plugins.notification.local.schedule({
+                id: notificationID,
+                text: txt,
+                title: type + " from " + from,
+                icon: 'file://favicon.png'
+            });
 
-            // we will store the intercepted SMS here for later restore
-            var smsList = [];
-            var interceptEnabled = false;
-            var watching = false;
+            showToast(txt);
+            notificationID = notificationID + 1;
+        };
 
-            function schmeeNotifications(data) {
-                var contacts = loadSavedContacts();
-                var fromNumber = data.address;
-                var msg = data.body;
-                var fromName = getDisplayName(contacts, fromNumber);
+        scheduleSilent = function(txt, type, from) {
+            cordova.plugins.notification.local.schedule({
+                id: notificationID,
+                text: txt,
+                title: type + " from " + from,
+                icon: 'file://favicon.png',
+                sound: null
+            });
+            notificationID = notificationID + 1;
+        };
 
-                var divdata = $('div#data');
-                var htmldata = "<li>"+ msg + "<br>" + fromName +"</li>";
-                divdata.html(divdata.html() + htmldata);
+        var default_notify = true;
 
-                if (isKnownContact(contacts, fromNumber)) {                    
-                    // Known Contacts
-                    if (shouldEmergency(msg)) {
-                        // Emergency Override
-                        if (acceptEmergency(contacts, fromNumber)) {
-                            // alert("Known Contact with emergency permission, emergency found.");
-                            scheduleAlert(msg, "Emergency", fromName);
+        // we will store the intercepted SMS here for later restore
+        var smsList = [];
+        var interceptEnabled = false;
+        var watching = false;
+
+        function schmeeNotifications(data) {
+            var contacts = loadSavedContacts();
+            var fromNumber = data.address;
+            var msg = data.body;
+            var fromName = getDisplayName(contacts, fromNumber);
+
+            var divdata = $('div#data');
+            var htmldata = "<li>"+ msg + "<br>" + fromName +"</li>";
+            divdata.html(divdata.html() + htmldata);
+
+            if (isKnownContact(contacts, fromNumber)) {                    
+                // Known Contacts
+                if (shouldEmergency(msg)) {
+                    // Emergency Override
+                    if (acceptEmergency(contacts, fromNumber)) {
+                        // alert("Known Contact with emergency permission, emergency found.");
+                        scheduleAlert(msg, "Emergency", fromName);
+                    } else {
+                        // alert("Known Contact without emergency permission, emergency found.");
+                    }
+                } else {
+                    if (shouldAlert(msg)) {
+                        // Alert Override
+                        if (acceptAlerts(contacts, fromNumber)) {
+                            // alert("Known Contact with alert permission, alert found.");
+                            scheduleAlert(msg, "Alert", fromName);
                         } else {
-                            // alert("Known Contact without emergency permission, emergency found.");
+                            // alert("Known Contact without alert permission, alert found.");
                         }
                     } else {
-                        if (shouldAlert(msg)) {
-                            // Alert Override
-                            if (acceptAlerts(contacts, fromNumber)) {
-                                // alert("Known Contact with alert permission, alert found.");
-                                scheduleAlert(msg, "Alert", fromName);
+                        // Silence
+                        if (shouldSilence(msg)) {
+                            if (acceptSilence(contacts, fromNumber)) {
+                                // alert("Known Contact with silence permission, silence found.");
+                                scheduleSilent(msg, "Silence", fromName);
                             } else {
-                                // alert("Known Contact without alert permission, alert found.");
-                            }
-                        } else {
-                            // Silence
-                            if (shouldSilence(msg)) {
-                                if (acceptSilence(contacts, fromNumber)) {
-                                    // alert("Known Contact with silence permission, silence found.");
-                                    scheduleSilent(msg, "Silence", fromName);
-                                } else {
-                                    // alert("Known Contact without silence permission, silence found.");
-                                }
+                                // alert("Known Contact without silence permission, silence found.");
                             }
                         }
                     }
-
-                    
-                } else {
-                    // Unknown Contacts
-                    if (shouldAlert(msg)) {
-                        if (default_notify) {
-                            // alert("Unknown Contact, default accept emojis, alert found.");
-                            scheduleAlert(msg, "Alert", fromNumber);
-                        } else {
-                            // alert("Unknown Contact, default reject emojis, alert found.");
-                            scheduleSilent(msg, "Silence", fromNumber);
-                        }
-                    }
-
-                    if (shouldSilence(msg)) {
-                        if (default_notify) {
-                            alert("Unknown Contact, default accept emojis, silence found.");
-                        } else {
-                            alert("Unknown Contact, default reject emojis, silence found.");
-                        }
-                    }
-                    
                 }
+
+                
+            } else {
+                // Unknown Contacts
+                if (shouldAlert(msg)) {
+                    if (default_notify) {
+                        // alert("Unknown Contact, default accept emojis, alert found.");
+                        scheduleAlert(msg, "Alert", fromNumber);
+                    } else {
+                        // alert("Unknown Contact, default reject emojis, alert found.");
+                        scheduleSilent(msg, "Silence", fromNumber);
+                    }
+                }
+
+                if (shouldSilence(msg)) {
+                    if (default_notify) {
+                        alert("Unknown Contact, default accept emojis, silence found.");
+                    } else {
+                        alert("Unknown Contact, default reject emojis, silence found.");
+                    }
+                }
+                
+            }
+        }
+
+        function initApp() {
+            if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
+            
+            // SMS Arrived
+            document.addEventListener('onSMSArrive', function(e){
+                var data = e.data;
+                
+                smsList.push( data );
+                
+                updateStatus('SMS arrived, count: ' + smsList.length );
+                
+                schmeeNotifications(data);
+            });
+
+            if (SMS) {
+                toggleWatch();
+                // toggleIntercept();
             }
 
-            function initApp() {
-                if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
-                
-                // SMS Arrived
-                document.addEventListener('onSMSArrive', function(e){
-                    var data = e.data;
-                    
-                    smsList.push( data );
-                    
-                    updateStatus('SMS arrived, count: ' + smsList.length );
-                    
-                    schmeeNotifications(data);
-                });
+            // Set location on notification click
+            document.addEventListener('deviceready', function(){
+                cordova.plugins.notification.local.onclick = function (notification) {
+                    location.href="index.html";
+                };
+            }, false);
 
-                if (SMS) {
-                    toggleWatch();
-                    // toggleIntercept();
+            // Background Mode
+            document.addEventListener('deviceready', function () {
+                cordova.plugins.backgroundMode.setDefaults({ text:'Watching incoming SMS.'});
+
+                cordova.plugins.backgroundMode.enable();
+
+                cordova.plugins.backgroundMode.onactivate = function () {
+                    setTimeout(function () {
+                        cordova.plugins.backgroundMode.configure({
+                            text:'Watching for incoming SMS....'
+                        });
+                    }, 5000);
                 }
+            }, false);
+        }
+        
+        function update( id, str ) {
+            $('div#' + id).html( str );
+        }
+        function updateStatus( str ) {
+            $('div#status').html( str );
+        }
+        function updateData( str ) {
+            $('div#data').html( str );
+        }
+        
+        function sendSMS() {
+            var sendto = $('input#sendto').val().trim();
+            var textmsg = $('textarea#textmsg').val();
+            if(sendto.indexOf(";") >=0) {
+                sendto = sendto.split(";");
+                for(i in sendto) {
+                    sendto[i] = sendto[i].trim();
+                }
+            }
+            if(SMS) SMS.sendSMS(sendto, textmsg, function(){}, function(str){alert(str);});
+        }
 
-                // Set location on notification click
-                document.addEventListener('deviceready', function(){
-                    cordova.plugins.notification.local.onclick = function (notification) {
-                        location.href="index.html";
-                    };
-                }, false);
-
-                // Background Mode
-                document.addEventListener('deviceready', function () {
-                    cordova.plugins.backgroundMode.setDefaults({ text:'Watching incoming SMS.'});
-
-                    cordova.plugins.backgroundMode.enable();
-
-                    cordova.plugins.backgroundMode.onactivate = function () {
-                        setTimeout(function () {
-                            cordova.plugins.backgroundMode.configure({
-                                text:'Watching for incoming SMS....'
-                            });
-                        }, 5000);
+        function listSMS() {
+            updateData('');
+            
+            if(SMS) SMS.listSMS({}, function(data){
+                updateStatus('sms listed as json array');
+                
+                var html = "";
+                if(Array.isArray(data)) {
+                    for(var i in data) {
+                        var sms = data[i];
+                        html += sms.address + ": " + sms.body + "<br/>";
                     }
-                }, false);
+                }
+                updateData( html );
+                
+            }, function(err){
+                updateStatus('error list sms: ' + err);
+            });
+        }
+
+        function deleteLastSMS() {
+            updateData('');
+
+            if(smsList.length == 0) {
+                updateStatus( 'no sms id to delete' );
+                return;
             }
             
-            function update( id, str ) {
-                $('div#' + id).html( str );
+            var sms = smsList.pop();
+            
+            if(SMS) SMS.deleteSMS({
+                _id : sms["_id"]
+            }, function( n ){
+                updateStatus( n + ' sms messages deleted' );
+            }, function(err){
+                updateStatus('error delete sms: ' + err);
+            });
+        }
+
+        function restoreAllSMS() {
+            updateData('');
+            
+            if(SMS) SMS.restoreSMS(smsList, function( n ){
+                smsList.length = 0;
+                updateStatus(n + ' sms messages restored');
+                
+            }, function(err){
+                updateStatus('error restore sms: ' + err);
+            });
+        }
+
+        function startWatch() {
+            if(SMS) SMS.startWatch(function(){
+                $('#watchBtn').html('Stop Watching SMS');
+            }, function(){
+                updateStatus('failed to start watching');
+            });
+        }
+
+        function stopWatch() {
+            if(SMS) SMS.stopWatch(function(){
+                $('#watchBtn').html('Start Watching SMS');
+            }, function(){
+                updateStatus('failed to stop watching');
+            });
+        }
+
+        function toggleWatch() {
+            watching = ! watching;
+
+            if (watching) {
+                startWatch();
+            } else {
+                stopWatch();
             }
-            function updateStatus( str ) {
-                $('div#status').html( str );
-            }
-            function updateData( str ) {
-                $('div#data').html( str );
+        }
+        
+        function toggleIntercept() {
+            interceptEnabled = ! interceptEnabled;
+            
+            if(interceptEnabled) {
+                smsList.length = 0;
             }
             
-            function sendSMS() {
-                var sendto = $('input#sendto').val().trim();
-                var textmsg = $('textarea#textmsg').val();
-                if(sendto.indexOf(";") >=0) {
-                    sendto = sendto.split(";");
-                    for(i in sendto) {
-                        sendto[i] = sendto[i].trim();
-                    }
-                }
-                if(SMS) SMS.sendSMS(sendto, textmsg, function(){}, function(str){alert(str);});
-            }
+            if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
+        }
 
-            function listSMS() {
-                updateData('');
-                
-                if(SMS) SMS.listSMS({}, function(data){
-                    updateStatus('sms listed as json array');
-                    
-                    var html = "";
-                    if(Array.isArray(data)) {
-                        for(var i in data) {
-                            var sms = data[i];
-                            html += sms.address + ": " + sms.body + "<br/>";
-                        }
-                    }
-                    updateData( html );
-                    
-                }, function(err){
-                    updateStatus('error list sms: ' + err);
-                });
-            }
-
-            function deleteLastSMS() {
-                updateData('');
-
-                if(smsList.length == 0) {
-                    updateStatus( 'no sms id to delete' );
-                    return;
-                }
-                
-                var sms = smsList.pop();
-                
-                if(SMS) SMS.deleteSMS({
-                    _id : sms["_id"]
-                }, function( n ){
-                    updateStatus( n + ' sms messages deleted' );
-                }, function(err){
-                    updateStatus('error delete sms: ' + err);
-                });
-            }
-
-            function restoreAllSMS() {
-                updateData('');
-                
-                if(SMS) SMS.restoreSMS(smsList, function( n ){
-                    smsList.length = 0;
-                    updateStatus(n + ' sms messages restored');
-                    
-                }, function(err){
-                    updateStatus('error restore sms: ' + err);
-                });
-            }
-
-            function startWatch() {
-                if(SMS) SMS.startWatch(function(){
-                    $('#watchBtn').html('Stop Watching SMS');
-                }, function(){
-                    updateStatus('failed to start watching');
-                });
-            }
-
-            function stopWatch() {
-                if(SMS) SMS.stopWatch(function(){
-                    $('#watchBtn').html('Start Watching SMS');
-                }, function(){
-                    updateStatus('failed to stop watching');
-                });
-            }
-
-            function toggleWatch() {
-                watching = ! watching;
-
-                if (watching) {
-                    startWatch();
-                } else {
-                    stopWatch();
-                }
-            }
-            
-            function toggleIntercept() {
-                interceptEnabled = ! interceptEnabled;
-                
-                if(interceptEnabled) {
-                    smsList.length = 0;
-                }
-                
-                if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
-            }
-
-            function toggleDefaultNotify(){
-                default_notify = ! default_notify;
-            }
-        </script>
-    </body>
+        function toggleDefaultNotify(){
+            default_notify = ! default_notify;
+        }
+    </script>
+</body>
 </html>

@@ -18,21 +18,21 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
         });
       } else {
         // saveContacts(testContacts);
-        $scope.contacts = mergeWithSavedContacts(testContacts2);
+        $scope.contacts = mergeWithSavedContacts(testContacts);
         saveContacts($scope.contacts);
       }
   }
 
   $scope.toggleSilence = function(id) {
-    toggleSilenceContact(id);
+    $scope.contacts = toggleSilenceContact(id);
   }
 
   $scope.toggleAlert = function(id) {
-    toggleAlertContact(id);
+    $scope.contacts = toggleAlertContact(id);
   }
 
   $scope.toggleEmergency = function(id) {
-    toggleEmergencyContact(id);
+    $scope.contacts = toggleEmergencyContact(id);
   }
 
   $scope.init = function () {
@@ -40,6 +40,18 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   };
 
   $scope.init();
+})
+
+
+.controller('SettingsCtrl', function($scope) {
+  $scope.toggleAcceptUnknownAlert = toggleAcceptUnknownAlert();
+  $scope.toggleAcceptUnknownSilent = toggleAcceptUnknownSilent();
+  $scope.toggleAcceptUnknownEmergency = toggleAcceptUnknownEmergency();
+
+  $scope.accept_unknown_emergency = loadVariable('accept_unknown_emergency');
+  $scope.accept_unknown_alert = loadVariable('accept_unknown_alert');
+  $scope.accept_unknown_silent = loadVariable('accept_unknown_silent');
+
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
@@ -66,6 +78,15 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
         'contacts-tab': {
           templateUrl: "templates/contacts.html",
           controller: "ContactsCtrl"
+        }
+      }
+    })
+    .state('tabs.settings', {
+      url: "/settings",
+      views: {
+        'settings-tab': {
+          templateUrl: "templates/settings.html",
+          controller: "SettingsCtrl"
         }
       }
     });

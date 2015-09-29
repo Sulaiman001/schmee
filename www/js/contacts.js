@@ -1,8 +1,11 @@
 // Contacts Utility Functions
 // Written by Mocha Dick
 var default_alert = true;
-var default_silence = true;
+var default_silent = true;
 var default_emergency = true;
+var default_accept_unknown_alert = true;
+var default_accept_unknown_silent = true;
+var default_accept_unknown_emergency = true;
 
 
 function stripNumber(num) {
@@ -21,10 +24,12 @@ function onContactsLoadSuccess(contacts) {
     // $('#test').html(JSON.stringify(mergedContacts));
 }
 
+
 function onContactsLoadError(contactError) {
     // js = callback hell
     alert("Error loading contacts", contactError);
 }
+
 
 function loadContacts() {
     if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
@@ -37,7 +42,10 @@ function loadContacts() {
         var mergedContacts = mergeWithSavedContacts(testContacts);
 	    saveContacts(mergedContacts);
     }
+
+    loadUnknownNumberVariables();
 }
+
 
 function loadSavedContacts() {
 	var contacts = localStorage.getItem('contacts')
@@ -47,9 +55,11 @@ function loadSavedContacts() {
 	return null;
 }
 
+
 function saveContacts(contactsArray) {
 	localStorage.setItem('contacts', JSON.stringify(contactsArray));
 }
+
 
 function mergeWithSavedContacts(contactsArray) {
 	// check for matching ids
@@ -105,12 +115,14 @@ function defaultContacts(contactsArray) {
 	return contactsArray;	
 }
 
+
 function defaultEmergency(contactsArray, idx) {
 	if (contactsArray[idx].emergency == undefined) {
 		contactsArray[idx].emergency = default_emergency;
 	}
 	return contactsArray;
 }
+
 
 function defaultAlert(contactsArray, idx) {
 	if (contactsArray[idx].alerts == undefined) {
@@ -119,9 +131,10 @@ function defaultAlert(contactsArray, idx) {
 	return contactsArray;
 }
 
+
 function defaultSilence(contactsArray, idx) {
 	if (contactsArray[idx].silence == undefined) {
-		contactsArray[idx].silence = default_silence;
+		contactsArray[idx].silence = default_silent;
 	}
 	return contactsArray;
 }
@@ -180,44 +193,110 @@ function getDisplayName(contactsArray, phoneNumber) {
 
 
 function acceptEmergency(contactsArray, phoneNumber) {
-	return isTrue(contactsArray, phoneNumber, "emergency")
+	if (isKnownContact(contactsArray, phoneNumber)) {
+		return isTrue(contactsArray, phoneNumber, "emergency");
+	} else if (accept_unknown_emergency) {
+		return true;
+	}
+	return false;
 }
 
 
 function acceptAlerts(contactsArray, phoneNumber) {
-	return isTrue(contactsArray, phoneNumber, "alerts");
+	if (isKnownContact(contactsArray, phoneNumber)) {
+		return isTrue(contactsArray, phoneNumber, "alerts");
+	} else if (accept_unknown_alert) {
+		return true;
+	}
+	return false;
 }
 
 
 function acceptSilence(contactsArray, phoneNumber) {
-	return isTrue(contactsArray, phoneNumber, "silence");
+	if (isKnownContact(contactsArray, phoneNumber)) {
+		return isTrue(contactsArray, phoneNumber, "silence");
+	} else if (accept_unknown_silent) {
+		return true;
+	}
+	return false;
+}
+
+
+function saveVariable(name, data) {
+	localStorage.setItem(name, data);
+}
+
+
+function loadVariable(name) {
+	return localStorage.getItem(name);
+}
+
+
+function loadUnknownNumberVariables() {
+	var accept_unknown_alert = loadVariable('accept_unknown_alert');
+	if (accept_unknown_alert == null) {
+		accept_unknown_alert = default_accept_unknown_alert;
+	}
+	var accept_unknown_silent = loadVariable('accept_unknown_silent');
+	if (accept_unknown_silent == null) {
+		accept_unknown_silent = default_accept_unknown_silent;
+	}
+	var accept_unknown_emergency = loadVariable('accept_unknown_emergency');
+	if (accept_unknown_emergency == null) {
+		accept_unknown_emergency = default_accept_unknown_emergency;
+	}
+}
+
+
+function toggleAcceptUnknownAlert() {
+	var accept_unknown_alert = loadVariable('accept_unknown_alert');
+	saveVariable('accept_unknown_alert', !accept_unknown_alert);
+}
+
+
+function toggleAcceptUnknownSilent() {
+	var accept_unknown_silent = loadVariable('accept_unknown_silent');
+	saveVariable('accept_unknown_silent', !accept_unknown_silent);
+}
+
+
+function toggleAcceptUnknownEmergency() {
+	var accept_unknown_emergency = loadVariable('accept_unknown_emergency');
+	saveVariable('accept_unknown_emergency', !accept_unknown_emergency);
 }
 
 
 function toggleContactField(id, field) {
-	var contactsArray = loadSavedContacts();
-	for(i=0;i<contactsArray.length;i++){
-		if (contactsArray[i]['id'] == id) {
-			contactsArray[i][field] = !contactsArray[i][field];
-			saveContacts(contactsArray);
+	var contacts = loadSavedContacts();
+	for(i=0;i<contacts.length;i++){
+		if (contacts[i]['id'] == id) {
+			contacts[i][field] = !contacts[i][field];
+			saveContacts(contacts);
 		}
 	}
+	return contacts;
 }
+
 
 function toggleEmergencyContact(id) {
-	toggleContactField(id, "emergency");
+	var contacts = toggleContactField(id, "emergency");
+	return contacts;
 }
+
 
 function toggleAlertContact(id) {
-	toggleContactField(id, "alerts");
+	var contacts = toggleContactField(id, "alerts");
+	return contacts;
 }
+
 
 function toggleSilenceContact(id) {
-	toggleContactField(id, "silence");
+	var contacts = toggleContactField(id, "silence");
+	return contacts;
 }
 
-// Tests
 
+// Tests
 var testContacts = [{
 		"id": "1",
       	"displayName": "Glen Baker",
@@ -350,6 +429,7 @@ function testAcceptAlerts() {
 
 }
 
+
 function testAcceptSilence() {
 	if (acceptSilence(testContacts, "0835592468891")) {
 		console.log("+ Success!  Expected acceptSilence true");
@@ -365,6 +445,7 @@ function testAcceptSilence() {
 		console.log("- Failure!  Expected acceptSilence false");
 	}
 }
+
 
 function contactsTest() {
 	console.log("Testing contacts.js...")
