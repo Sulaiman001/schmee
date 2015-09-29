@@ -1,4 +1,4 @@
-// Parses SMS messages for valid emojis
+// Parses SMS messages for valid emojis and commands
 // Written by Mocha Dick
 
 var alert_emoji = "👂";

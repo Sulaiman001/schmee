@@ -561,13 +561,10 @@ function contactsTest() {
 	var errorCount = 0;
 	errorCount += testAcceptAlerts();
 	errorCount += testAcceptSilent();
-
 	errorCount += testToggleAlerts();
 	errorCount += testToggleSilent();
 	errorCount += testToggleEmergency();
-
 	errorCount += testGetDisplayName();
-
 	errorCount += testToggleAcceptUnknownAlert();
 	errorCount += testToggleAcceptUnknownSilent();
 	errorCount += testToggleAcceptUnknownEmergency();
