@@ -100,7 +100,7 @@ function shouldSilent(sms) {
     return parseSilent(sms);
 }
 
-// Tests
+// Tests for parseEmoji.js
 
 /* Simple tests to verify parseEmoji identifies all of
  * the expected emojis.

@@ -22,7 +22,9 @@
 
     <!-- App Scripts -->
     <script src="js/parseEmoji.js"></script>
+    <script src="js/parseEmojiTests.js"></script>
     <script src="js/contacts.js"></script>
+    <script src="js/contactsTests.js"></script>
     <script src="js/app.js"></script>
 
     <link rel="stylesheet" href="css/base.css">
@@ -58,17 +60,14 @@
     <script id="templates/home.html" type="text/ng-template">
       <ion-view view-title="Messages">
         <ion-content class="padding">
-            <div id="fullpage">
-                <!--<button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>-->
-                <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
-                <div id='status'></div><hr/>
-                <ul>
-                <div id='data' style='text-align:left;'>
-
-                </div>
-                </ul>
-            </div>
-
+            <!--<button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>-->
+            <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
+            <div id='status'></div><hr/>
+            <ion-list ng-controller="MessagesCtrl"
+                      show-delete="shouldShowDelete"
+                      show-reorder="shouldShowReorder"
+                      id='data' style='text-align:left;'>
+            </ion-list>
             <div id="test"></div>
         </ion-content>
       </ion-view>
@@ -150,10 +149,14 @@
                 
                 // Test Components
                 if (debug) {
-                    // parseEmoji.js required
+                    // parseEmoji.js and parseEmojiTests.js required
                     parseEmojiTest();
-                    // contacts.js required
+                    // contacts.js and contactsTests.js required
                     contactsTest();
+
+                    data = testNotifications;
+                    schmeeNotifications(data);
+
                 }
             }
 
@@ -204,14 +207,29 @@
         var interceptEnabled = false;
         var watching = false;
 
+        var testNotifications = {
+            address: '0835592468891',
+            body: 'test !alert'
+        }
+
+        $('ion-delete-button.delete-notification').bind("click", function() {
+            $(this).parent().remove();
+        });
+
+
         function schmeeNotifications(data) {
             var contacts = loadSavedContacts();
             var fromNumber = data.address;
             var msg = data.body;
             var fromName = getDisplayName(contacts, fromNumber);
 
-            var divdata = $('div#data');
-            var htmldata = "<li>"+ msg + "<br>" + fromName +"</li>";
+            var divdata = $('#data');
+            var htmldata = "<ion-item class='notification' id='notification-"+ notificationID +"'>\""
+                                       + msg + 
+                           "\"<br> ~ " + fromName + "<br>" +
+                           "<button class='button-positive button button-clear'>Close</button>" +
+                           "<button class='button-calm button button-clear'>Reply</button>" +
+                           "</ion-item><br>";
             divdata.html(divdata.html() + htmldata);
 
             if (isKnownContact(contacts, fromNumber)) {                    
@@ -319,7 +337,7 @@
             $('div#status').html( str );
         }
         function updateData( str ) {
-            $('div#data').html( str );
+            $('#data').html( str );
         }
         
         function sendSMS() {

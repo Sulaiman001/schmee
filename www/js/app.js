@@ -7,6 +7,12 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
 })
 
+.controller('MessagesCtrl', function($scope) {
+  $scope.shouldShowDelete = true;
+  $scope.shouldShowReorder = true;
+
+})
+
 .controller('ContactsCtrl', function($scope, $cordovaContacts) {
   var isAndroid = ionic.Platform.isAndroid();
 
