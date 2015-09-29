@@ -23,8 +23,8 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
       }
   }
 
-  $scope.toggleSilence = function(id) {
-    $scope.contacts = toggleSilenceContact(id);
+  $scope.toggleSilent = function(id) {
+    $scope.contacts = toggleSilentContact(id);
   }
 
   $scope.toggleAlert = function(id) {
@@ -44,9 +44,15 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
 
 .controller('SettingsCtrl', function($scope) {
-  $scope.toggleAcceptUnknownAlert = toggleAcceptUnknownAlert();
-  $scope.toggleAcceptUnknownSilent = toggleAcceptUnknownSilent();
-  $scope.toggleAcceptUnknownEmergency = toggleAcceptUnknownEmergency();
+  $scope.toggleAcceptUnknownAlert = function() {
+    toggleAcceptUnknownAlert();
+  }
+  $scope.toggleAcceptUnknownSilent = function() {
+    toggleAcceptUnknownSilent();
+  }
+  $scope.toggleAcceptUnknownEmergency = function() {
+    toggleAcceptUnknownEmergency();
+  }
 
   $scope.accept_unknown_emergency = loadVariable('accept_unknown_emergency');
   $scope.accept_unknown_alert = loadVariable('accept_unknown_alert');

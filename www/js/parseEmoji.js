@@ -2,14 +2,14 @@
 // Written by Mocha Dick
 
 var alert_emoji = "👂";
-var silence_emoji = "😶";
+var silent_emoji = "😶";
 var emergency_emoji = "❗";
 var schedule_emoji = "";
 
 
 
 var alert_emojis = ["!alert", alert_emoji];
-var silence_emojis = ["!silent", silence_emoji];
+var silent_emojis = ["!silent", silent_emoji];
 var emergency_emojis = ["!emergency", emergency_emoji];
 
 var schedule_emojis = ["!schedule", schedule_emoji];
@@ -52,9 +52,9 @@ function parseEmergency(sms) {
     return false
 }
 
-function parseSilence(sms) {
-    for (i=0;i<silence_emojis.length;i++) {
-        if (sms.indexOf(silence_emojis[i]) > 0) {
+function parseSilent(sms) {
+    for (i=0;i<silent_emojis.length;i++) {
+        if (sms.indexOf(silent_emojis[i]) > 0) {
             return true;
         }
     }
@@ -68,18 +68,18 @@ function parseSilence(sms) {
 function parseEmoji(sms) {
     if (sms.indexOf(alert_emoji) > 0) {
         return alert_emoji;
-    } else if (sms.indexOf(silence_emoji) > 0) {
-        return silence_emoji;
+    } else if (sms.indexOf(silent_emoji) > 0) {
+        return silent_emoji;
     } else if (sms.indexOf(emergency_emoji) > 0) {
         return emergency_emoji;
     } else if (sms.indexOf(alert_emoji) > 0 &&
-                  sms.indexOf(silence_emoji) > 0) {
+                  sms.indexOf(silent_emoji) > 0) {
         var alert_count = occurrences(sms, alert_emoji);
-        var silence_count = occurrences(sms, silence_emoji);
-        if (alert_count > silence_count) {
+        var silent_count = occurrences(sms, silent_emoji);
+        if (alert_count > silent_count) {
             return alert_emoji;
         } else {
-            return silence_emoji;
+            return silent_emoji;
         }
     } else {
         return null;
@@ -95,8 +95,8 @@ function shouldAlert(sms) {
     return parseAlert(sms);
 }
 
-function shouldSilence(sms) {
-    return parseSilence(sms);
+function shouldSilent(sms) {
+    return parseSilent(sms);
 }
 
 // Tests
@@ -133,10 +133,10 @@ function parseEmojiTest() {
     }
 
 
-    if (parseSilence(testSilentSMS)) {
-        console.log("+ Success!  Silence emoji identified");
+    if (parseSilent(testSilentSMS)) {
+        console.log("+ Success!  Silent emoji identified");
     } else {
-        console.log("- Error identifying silence emoji");
+        console.log("- Error identifying silent emoji");
         success = false;
         errorCount += 1;
     }

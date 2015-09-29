@@ -109,7 +109,7 @@ function defaultContacts(contactsArray) {
 	// Initializes default settings on the given contactsArray
 	for (i = 0; i < contactsArray.length; i++) {
 		contactsArray = defaultAlert(contactsArray, i);
-		contactsArray = defaultSilence(contactsArray, i);
+		contactsArray = defaultSilent(contactsArray, i);
 		contactsArray = defaultEmergency(contactsArray, i);
 	}
 	return contactsArray;	
@@ -132,9 +132,9 @@ function defaultAlert(contactsArray, idx) {
 }
 
 
-function defaultSilence(contactsArray, idx) {
-	if (contactsArray[idx].silence == undefined) {
-		contactsArray[idx].silence = default_silent;
+function defaultSilent(contactsArray, idx) {
+	if (contactsArray[idx].silent == undefined) {
+		contactsArray[idx].silent = default_silent;
 	}
 	return contactsArray;
 }
@@ -212,9 +212,9 @@ function acceptAlerts(contactsArray, phoneNumber) {
 }
 
 
-function acceptSilence(contactsArray, phoneNumber) {
+function acceptSilent(contactsArray, phoneNumber) {
 	if (isKnownContact(contactsArray, phoneNumber)) {
-		return isTrue(contactsArray, phoneNumber, "silence");
+		return isTrue(contactsArray, phoneNumber, "silent");
 	} else if (accept_unknown_silent) {
 		return true;
 	}
@@ -290,8 +290,8 @@ function toggleAlertContact(id) {
 }
 
 
-function toggleSilenceContact(id) {
-	var contacts = toggleContactField(id, "silence");
+function toggleSilentContact(id) {
+	var contacts = toggleContactField(id, "silent");
 	return contacts;
 }
 
@@ -302,7 +302,7 @@ var testContacts = [{
       	"displayName": "Glen Baker",
       	"emergency": true,
       	"alerts": true,
-      	"silence": true,
+      	"silent": true,
       	"phoneNumbers": [{
 	      	"id": "4",
 	      	"value": "(559) 246-8891",
@@ -314,13 +314,13 @@ var testContacts = [{
       "displayName": 'Robert Hawk',
 	  "emergency": true,
       "alerts": false,
-      "silence": true
+      "silent": true
     },
     { "id": "3",
       "displayName": 'Mocha Dick',
       "emergency": false,
       "alerts": false,
-      "silence": false,
+      "silent": false,
       "phoneNumbers": [{
 	      	"id": "4",
 	      	"value": "(559) 888-8888",
@@ -384,16 +384,16 @@ function testToggleAlerts() {
 }
 
 
-function testToggleSilence() {
+function testToggleSilent() {
 	var preToggleContacts = loadSavedContacts();
-	var preToggle = acceptSilence(preToggleContacts, "0835598888888");
-	toggleSilenceContact(3);
+	var preToggle = acceptSilent(preToggleContacts, "0835598888888");
+	toggleSilentContact(3);
 	var postToggleContacts = loadSavedContacts();
-	var postToggle = acceptSilence(postToggleContacts, "0835598888888");
+	var postToggle = acceptSilent(postToggleContacts, "0835598888888");
 	if (preToggle != postToggle) {
-		console.log("+ Success!  toggleSilenceContact working as expected");
+		console.log("+ Success!  toggleSilentContact working as expected");
 	} else {
-		console.log("- Failure!  toggleSilenceContact not working as expected");
+		console.log("- Failure!  toggleSilentContact not working as expected");
 	}
 }
 
@@ -430,19 +430,19 @@ function testAcceptAlerts() {
 }
 
 
-function testAcceptSilence() {
-	if (acceptSilence(testContacts, "0835592468891")) {
-		console.log("+ Success!  Expected acceptSilence true");
+function testAcceptSilent() {
+	if (acceptSilent(testContacts, "0835592468891")) {
+		console.log("+ Success!  Expected acceptSilent true");
 	} else {
-		console.log(acceptSilence(testContacts, "0835592468891"));
-		console.log("- Failure!  Expected acceptSilence true");
+		console.log(acceptSilent(testContacts, "0835592468891"));
+		console.log("- Failure!  Expected acceptSilent true");
 	}
 
-	if (!acceptSilence(testContacts, "0835598888888")) {
-		console.log("+ Success!  Expected acceptSilence false");
+	if (!acceptSilent(testContacts, "0835598888888")) {
+		console.log("+ Success!  Expected acceptSilent false");
 	} else {
-		console.log(acceptSilence(testContacts, "0835598888888"));
-		console.log("- Failure!  Expected acceptSilence false");
+		console.log(acceptSilent(testContacts, "0835598888888"));
+		console.log("- Failure!  Expected acceptSilent false");
 	}
 }
 
@@ -450,10 +450,10 @@ function testAcceptSilence() {
 function contactsTest() {
 	console.log("Testing contacts.js...")
 	testAcceptAlerts();
-	testAcceptSilence();
+	testAcceptSilent();
 
 	testToggleAlerts();
-	testToggleSilence();
+	testToggleSilent();
 	testToggleEmergency();
 
 	testGetDisplayName();

@@ -87,9 +87,9 @@
                       Accept !alert 👂
                     </ion-checkbox>
 
-                    <ion-checkbox ng-model="contact.silence"
-                                  ng-checked="contact.silence"
-                                  ng-click="toggleSilence(contact.id)">
+                    <ion-checkbox ng-model="contact.silent"
+                                  ng-checked="contact.silent"
+                                  ng-click="toggleSilent(contact.id)">
                       Accept !silent 😶
                     </ion-checkbox>
 
@@ -225,13 +225,13 @@
                             // alert("Known Contact without alert permission, alert found.");
                         }
                     } else {
-                        // Silence
-                        if (shouldSilence(msg)) {
-                            if (acceptSilence(contacts, fromNumber)) {
-                                // alert("Known Contact with silence permission, silence found.");
-                                scheduleSilent(msg, "Silence", fromName);
+                        // Silent
+                        if (shouldSilent(msg)) {
+                            if (acceptSilent(contacts, fromNumber)) {
+                                // alert("Known Contact with silent permission, silent found.");
+                                scheduleSilent(msg, "Silent", fromName);
                             } else {
-                                // alert("Known Contact without silence permission, silence found.");
+                                // alert("Known Contact without silent permission, silent found.");
                             }
                         }
                     }
@@ -246,15 +246,15 @@
                         scheduleAlert(msg, "Alert", fromNumber);
                     } else {
                         // alert("Unknown Contact, default reject emojis, alert found.");
-                        scheduleSilent(msg, "Silence", fromNumber);
+                        scheduleSilent(msg, "Silent", fromNumber);
                     }
                 }
 
-                if (shouldSilence(msg)) {
+                if (shouldSilent(msg)) {
                     if (default_notify) {
-                        alert("Unknown Contact, default accept emojis, silence found.");
+                        // alert("Unknown Contact, default accept emojis, silent found.");
                     } else {
-                        alert("Unknown Contact, default reject emojis, silence found.");
+                        // alert("Unknown Contact, default reject emojis, silent found.");
                     }
                 }
                 
