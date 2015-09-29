@@ -4,6 +4,7 @@
 var alert_emoji = "👂";
 var silent_emoji = "😶";
 var emergency_emoji = "❗";
+
 var schedule_emoji = "";
 
 
@@ -151,8 +152,8 @@ function parseEmojiTest() {
     }
 
     if (success) {
-        console.log("...parseEmoji() functioning properly.")
+        console.log("...parseEmoji.js isfunctioning properly.")
     } else {
-        console.log("...parseEmoji() encountered errors.", errorCount)
+        console.log("...parseEmoji.js encountered errors.", errorCount)
     }
 }
