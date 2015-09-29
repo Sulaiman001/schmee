@@ -57,18 +57,16 @@ function mergeWithSavedContacts(contactsArray) {
 	// any new information from the given contactsArray
 	var savedContacts = loadSavedContacts();
 	var newContacts = [];
-	if (contactsArray != null) {
+	if (contactsArray != null && savedContacts != null) {
 		for (i = 0; i < contactsArray.length; ++i) {
 			var matchFound = false;
-			if (savedContacts != null) {
-				for(j = 0; j < savedContacts.length && matchFound == false; ++j ) {
-					if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
-						matchFound = true;
-						savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
-						savedContacts[j]['name'] = contactsArray[i]['name'];
-						savedContacts[j]['nickname'] = contactsArray[i]['nickname'];
-						savedContacts[j]['phoneNumbers'] = contactsArray[i]['phoneNumbers'];
-					}
+			for(j = 0; j < savedContacts.length && matchFound == false; ++j ) {
+				if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
+					matchFound = true;
+					savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
+					savedContacts[j]['name'] = contactsArray[i]['name'];
+					savedContacts[j]['nickname'] = contactsArray[i]['nickname'];
+					savedContacts[j]['phoneNumbers'] = contactsArray[i]['phoneNumbers'];
 				}
 			}
 
@@ -76,7 +74,17 @@ function mergeWithSavedContacts(contactsArray) {
 				newContacts.push(contactsArray[i])
 			}
 		}
+	} else {
+		// null catch
+		if (contactsArray == null && savedContacts != null) {
+			return savedContacts;
+		} else if (savedContacts == null && contactsArray != null) {
+			return contactsArray;
+		} else if (contactsArray == null && saveContacts == null) {
+			return newContacts;
+		}
 	}
+
 	newContacts = defaultContacts(newContacts);
 
 	if (savedContacts != null) {
