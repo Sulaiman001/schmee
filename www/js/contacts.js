@@ -232,16 +232,20 @@ function loadVariable(name) {
 }
 
 
+function loadBool(name) {
+	return ("true" === loadVariable(name));
+}
+
 function loadUnknownNumberVariables() {
-	var accept_unknown_alert = loadVariable('accept_unknown_alert');
+	var accept_unknown_alert = loadBool('accept_unknown_alert');
 	if (accept_unknown_alert == null) {
 		accept_unknown_alert = default_accept_unknown_alert;
 	}
-	var accept_unknown_silent = loadVariable('accept_unknown_silent');
+	var accept_unknown_silent = loadBool('accept_unknown_silent');
 	if (accept_unknown_silent == null) {
 		accept_unknown_silent = default_accept_unknown_silent;
 	}
-	var accept_unknown_emergency = loadVariable('accept_unknown_emergency');
+	var accept_unknown_emergency = loadBool('accept_unknown_emergency');
 	if (accept_unknown_emergency == null) {
 		accept_unknown_emergency = default_accept_unknown_emergency;
 	}
@@ -249,20 +253,23 @@ function loadUnknownNumberVariables() {
 
 
 function toggleAcceptUnknownAlert() {
-	var accept_unknown_alert = loadVariable('accept_unknown_alert');
+	var accept_unknown_alert = loadBool('accept_unknown_alert');
 	saveVariable('accept_unknown_alert', !accept_unknown_alert);
+	return !accept_unknown_alert;
 }
 
 
 function toggleAcceptUnknownSilent() {
-	var accept_unknown_silent = loadVariable('accept_unknown_silent');
+	var accept_unknown_silent = loadBool('accept_unknown_silent');
 	saveVariable('accept_unknown_silent', !accept_unknown_silent);
+	return !accept_unknown_silent;
 }
 
 
 function toggleAcceptUnknownEmergency() {
-	var accept_unknown_emergency = loadVariable('accept_unknown_emergency');
+	var accept_unknown_emergency = loadBool('accept_unknown_emergency');
 	saveVariable('accept_unknown_emergency', !accept_unknown_emergency);
+	return !accept_unknown_emergency;
 }
 
 
@@ -467,17 +474,70 @@ function testAcceptSilent() {
 }
 
 
+function testToggleAcceptUnknownAlert() {
+	var errorCount = 0;
+	var pre_accept_unknown_alert = loadBool('accept_unknown_alert');
+	toggleAcceptUnknownAlert();
+	var post_accept_unknown_alert = loadBool('accept_unknown_alert');
+	if (pre_accept_unknown_alert == post_accept_unknown_alert) {
+		console.log("- Failure!  toggleAcceptUnknownAlert failed");
+		errorCount++;
+	} else {
+		console.log("+ Success!  toggleAcceptUnknownAlert functioning properly");
+	}
+	toggleAcceptUnknownAlert();  // reset variable after test
+	return errorCount;
+}
+
+
+function testToggleAcceptUnknownSilent() {
+	var errorCount = 0;
+	var pre_accept_unknown_alert = loadBool('accept_unknown_silent');
+	toggleAcceptUnknownSilent();
+	var post_accept_unknown_alert = loadBool('accept_unknown_silent');
+	if (pre_accept_unknown_alert == post_accept_unknown_alert) {
+		console.log("- Failure!  toggleAcceptUnknownSilent failed");
+		errorCount++;
+	} else {
+		console.log("+ Success!  toggleAcceptUnknownSilent functioning properly");
+	}
+	toggleAcceptUnknownSilent();  // reset variable after test
+	return errorCount;
+}
+
+
+function testToggleAcceptUnknownEmergency() {
+	var errorCount = 0;
+	var pre_accept_unknown_alert = loadBool('accept_unknown_emergency');
+	toggleAcceptUnknownEmergency();
+	var post_accept_unknown_alert = loadBool('accept_unknown_emergency');
+	if (pre_accept_unknown_alert == post_accept_unknown_alert) {
+		console.log("- Failure!  toggleAcceptUnknownEmergency failed");
+		errorCount++;
+	} else {
+		console.log("+ Success!  toggleAcceptUnknownEmergency functioning properly");
+	}
+	toggleAcceptUnknownEmergency();  // reset variable after test
+	return errorCount;
+}
+
+
 function contactsTest() {
 	console.log("Testing contacts.js...")
 	var errorCount = 0;
-	errorCount = errorCount + testAcceptAlerts();
-	errorCount = errorCount + testAcceptSilent();
+	errorCount += testAcceptAlerts();
+	errorCount += testAcceptSilent();
 
-	errorCount = errorCount + testToggleAlerts();
-	errorCount = errorCount + testToggleSilent();
-	errorCount = errorCount + testToggleEmergency();
+	errorCount += testToggleAlerts();
+	errorCount += testToggleSilent();
+	errorCount += testToggleEmergency();
 
-	errorCount = errorCount + testGetDisplayName();
+	errorCount += testGetDisplayName();
+
+	errorCount += testToggleAcceptUnknownAlert();
+	errorCount += testToggleAcceptUnknownSilent();
+	errorCount += testToggleAcceptUnknownEmergency();
+
 	if (errorCount == 0) {
 		console.log("...contacts.js is functioning properly.")
 	} else {

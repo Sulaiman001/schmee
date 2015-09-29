@@ -81,7 +81,13 @@
                 <ion-item ng-repeat="contact in contacts">
                     <h2>{{contact.displayName}}</h2>
 
-                    <ion-checkbox ng-model="contact.alerts"
+                    <ion-checkbox class='assertive' ng-model="contact.emergency"
+                                  ng-checked="contact.emergency"
+                                  ng-click="toggleEmergency(contact.id)">
+                      Accept !emergency ❗
+                    </ion-checkbox>
+
+                    <ion-checkbox class='positive' ng-model="contact.alerts"
                                   ng-checked="contact.alerts"
                                   ng-click="toggleAlert(contact.id)">
                       Accept !alert 👂
@@ -93,11 +99,11 @@
                       Accept !silent 😶
                     </ion-checkbox>
 
-                    <ion-checkbox ng-model="contact.emergency"
-                                  ng-checked="contact.emergency"
-                                  ng-click="toggleEmergency(contact.id)">
-                      Accept !emergency ❗
-                    </ion-checkbox>
+                    <!--<ion-checkbox class='energized' ng-model="contact.schedule"
+                                  ng-checked="contact.schedule"
+                                  ng-click="toggleSchedule(contact.id)">
+                      Accept !schedule
+                    </ion-checkbox>-->
                 </ion-item>
             </ion-list>
         </ion-content>
@@ -109,17 +115,20 @@
       <ion-view title="Settings" id='settingsView'>
         <ion-content>
             <ion-list>
-                <ion-toggle ng-checked="accept_unknown_emergency"
+                <ion-toggle ng-model="accept_unknown_emergency"
+                            ng-checked="accept_unknown_emergency"
                             ng-click="toggleAcceptUnknownEmergency()">
                   Accept !emergency from unknown numbers
                 </ion-toggle>
 
-                <ion-toggle ng-checked="accept_unknown_alert"
+                <ion-toggle ng-model="accept_unknown_alert"
+                            ng-checked="accept_unknown_alert"
                             ng-click="toggleAcceptUnknownAlert()">
                   Accept !alert from unknown numbers
                 </ion-toggle>
 
-                <ion-toggle ng-checked="accept_unknown_silent"
+                <ion-toggle ng-model="accept_unknown_silent"
+                            ng-checked="accept_unknown_silent"
                             ng-click="toggleAcceptUnknownSilent()">
                   Accept !silent from unknown numbers
                 </ion-toggle>

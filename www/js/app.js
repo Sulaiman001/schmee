@@ -45,19 +45,24 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
 .controller('SettingsCtrl', function($scope) {
   $scope.toggleAcceptUnknownAlert = function() {
-    toggleAcceptUnknownAlert();
+    $scope.accept_unknown_alert = toggleAcceptUnknownAlert();
   }
+
   $scope.toggleAcceptUnknownSilent = function() {
-    toggleAcceptUnknownSilent();
+    $scope.accept_unknown_silent = toggleAcceptUnknownSilent();
   }
+
   $scope.toggleAcceptUnknownEmergency = function() {
-    toggleAcceptUnknownEmergency();
+    $scope.accept_unknown_emergency = toggleAcceptUnknownEmergency();
   }
 
-  $scope.accept_unknown_emergency = loadVariable('accept_unknown_emergency');
-  $scope.accept_unknown_alert = loadVariable('accept_unknown_alert');
-  $scope.accept_unknown_silent = loadVariable('accept_unknown_silent');
+  $scope.init = function() {
+    $scope.accept_unknown_emergency = loadBool('accept_unknown_emergency');
+    $scope.accept_unknown_alert = loadBool('accept_unknown_alert');
+    $scope.accept_unknown_silent = loadBool('accept_unknown_silent');
+  }
 
+  $scope.init();
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {

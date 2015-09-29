@@ -152,7 +152,7 @@ function parseEmojiTest() {
     }
 
     if (success) {
-        console.log("...parseEmoji.js isfunctioning properly.")
+        console.log("...parseEmoji.js is functioning properly.")
     } else {
         console.log("...parseEmoji.js encountered errors.", errorCount)
     }
