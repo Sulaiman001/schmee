@@ -193,6 +193,7 @@ function getDisplayName(contactsArray, phoneNumber) {
 
 
 function acceptEmergency(contactsArray, phoneNumber) {
+	var accept_unknown_emergency = loadBool("accept_unknown_emergency");
 	if (isKnownContact(contactsArray, phoneNumber)) {
 		return isTrue(contactsArray, phoneNumber, "emergency");
 	} else if (accept_unknown_emergency) {
@@ -203,6 +204,7 @@ function acceptEmergency(contactsArray, phoneNumber) {
 
 
 function acceptAlerts(contactsArray, phoneNumber) {
+	var accept_unknown_alert = loadBool("accept_unknown_alert");
 	if (isKnownContact(contactsArray, phoneNumber)) {
 		return isTrue(contactsArray, phoneNumber, "alerts");
 	} else if (accept_unknown_alert) {
@@ -213,6 +215,7 @@ function acceptAlerts(contactsArray, phoneNumber) {
 
 
 function acceptSilent(contactsArray, phoneNumber) {
+	var accept_unknown_silent = loadBool("accept_unknown_silent");
 	if (isKnownContact(contactsArray, phoneNumber)) {
 		return isTrue(contactsArray, phoneNumber, "silent");
 	} else if (accept_unknown_silent) {
@@ -228,46 +231,77 @@ function saveVariable(name, data) {
 
 
 function loadVariable(name) {
+	// returns localStorage string value given a key
 	return localStorage.getItem(name);
 }
 
 
 function loadBool(name) {
+	// converts stored localStorage string to Boolean
 	return ("true" === loadVariable(name));
 }
 
+
 function loadUnknownNumberVariables() {
+	// if a variable is unset, sets to default value
 	var accept_unknown_alert = loadBool('accept_unknown_alert');
 	if (accept_unknown_alert == null) {
-		accept_unknown_alert = default_accept_unknown_alert;
+		saveVariable("accept_unknown_alert", default_accept_unknown_alert);
 	}
 	var accept_unknown_silent = loadBool('accept_unknown_silent');
 	if (accept_unknown_silent == null) {
-		accept_unknown_silent = default_accept_unknown_silent;
+		saveVariable("accept_unknown_silent", default_accept_unknown_silent);
 	}
 	var accept_unknown_emergency = loadBool('accept_unknown_emergency');
 	if (accept_unknown_emergency == null) {
-		accept_unknown_emergency = default_accept_unknown_emergency;
+		saveVariable("accept_unknown_emergency", default_accept_unknown_emergency);
 	}
+}
+
+
+function acceptUnknownAlert() {
+	var accept_unknown_alert = loadBool('accept_unknown_alert');
+	if (accept_unknown_alert == null) {
+		return default_accept_unknown_alert;
+	}
+	return accept_unknown_alert;
+}
+
+
+function acceptUnknownSilent() {
+	var accept_unknown_silent = loadBool('accept_unknown_silent');
+	if (accept_unknown_silent == null) {
+		return default_accept_unknown_silent;
+	}
+	return accept_unknown_silent;
+}
+
+
+function acceptUnknownEmergency() {
+	var accept_unknown_emergency = loadBool('accept_unknown_emergency');
+	if (accept_unknown_emergency == null) {
+		return default_accept_unknown_emergency;
+	}
+	return accept_unknown_emergency;
 }
 
 
 function toggleAcceptUnknownAlert() {
-	var accept_unknown_alert = loadBool('accept_unknown_alert');
+	var accept_unknown_alert = acceptUnknownAlert();
 	saveVariable('accept_unknown_alert', !accept_unknown_alert);
 	return !accept_unknown_alert;
 }
 
 
 function toggleAcceptUnknownSilent() {
-	var accept_unknown_silent = loadBool('accept_unknown_silent');
+	var accept_unknown_silent = acceptUnknownSilent();
 	saveVariable('accept_unknown_silent', !accept_unknown_silent);
 	return !accept_unknown_silent;
 }
 
 
 function toggleAcceptUnknownEmergency() {
-	var accept_unknown_emergency = loadBool('accept_unknown_emergency');
+	var accept_unknown_emergency = acceptUnknownEmergency();
 	saveVariable('accept_unknown_emergency', !accept_unknown_emergency);
 	return !accept_unknown_emergency;
 }
