@@ -11,6 +11,25 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   $scope.shouldShowDelete = true;
   $scope.shouldShowReorder = true;
 
+  $scope.messages = [
+    {
+      id: 1,
+      fromNumber: "0835592468891",
+      body: "test !alert",
+      fromName: "Glen Baker"
+    }
+  ]
+
+
+  $scope.addMessage = function(msg) {
+    $scope.messages.push(msg);
+  }
+
+  $scope.replySMS = function(fromNumber) {
+    console.log('replySMS clicked');
+    location.href="sms://"+fromNumber;
+  }
+
 })
 
 .controller('ContactsCtrl', function($scope, $cordovaContacts) {
