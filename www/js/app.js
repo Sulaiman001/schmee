@@ -73,7 +73,6 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
   $scope.$on('modal.removed', function() {
   });
-
 })
 
 .controller('ContactsCtrl', function($scope, $cordovaContacts) {
@@ -126,6 +125,8 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   }
 
   $scope.init = function() {
+    loadUnknownNumberVariables();
+
     $scope.accept_unknown_emergency = loadBool('accept_unknown_emergency');
     $scope.accept_unknown_alert = loadBool('accept_unknown_alert');
     $scope.accept_unknown_silent = loadBool('accept_unknown_silent');
