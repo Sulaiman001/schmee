@@ -89,8 +89,7 @@
             <ion-list ng-controller="MessagesCtrl"
                       show-delete="shouldShowDelete"
                       id='data'>
-                <ion-item class='item-text-wrap msg' ng-repeat="item in messages"
-                            class="item-thumbnail-left">
+                <ion-item class='item-text-wrap msg' ng-repeat="item in messages">
                     <p>{{ item.body }}</p>
 
                     <a ng-href="sms:{{item.fromNumber}}" class='message-reply button-calm button button-clear enable-pointer-events pull-right'>Reply</a>
@@ -147,6 +146,16 @@
       <ion-view title="Settings" id='settingsView'>
         <ion-content>
             <ion-list>
+                <ion-item>
+                <h2>Modes</h2>
+                <ion-toggle ng-model="emergency_mode"
+                            ng-checked="emergency_mode"
+                            ng-click="">
+                  Emergency Mode - Silence all but trusted !emergency
+                </ion-toggle>
+                </ion-item>
+                <ion-item>
+                <h2>Unknown Numbers</h2>
                 <ion-toggle ng-model="accept_unknown_emergency"
                             ng-checked="accept_unknown_emergency"
                             ng-click="toggleAcceptUnknownEmergency()">
@@ -164,6 +173,7 @@
                             ng-click="toggleAcceptUnknownSilent()">
                   Accept !silent from unknown numbers
                 </ion-toggle>
+                </ion-item>
             </ion-list>
         </ion-content>
       </ion-view>
@@ -202,12 +212,12 @@
                 id: notificationID,
                 text: txt,
                 title: type + " from " + from,
-                icon: 'file://favicon.png',
-                sound: 'file://emergency.mp3'
+                icon: "file://favicon.png",
+                sound: "file://resources/audio/sos.mp3"
             });
 
             showToast(txt);
-            notificationID = notificationID + 1;
+            notificationID++;
         }
 
         scheduleAlert = function(txt, type, from) {
@@ -219,7 +229,7 @@
             });
 
             showToast(txt);
-            notificationID = notificationID + 1;
+            notificationID++;
         };
 
         scheduleSilent = function(txt, type, from) {
@@ -230,7 +240,7 @@
                 icon: 'file://favicon.png',
                 sound: null
             });
-            notificationID = notificationID + 1;
+            notificationID++;
         };
 
         var default_notify = true;
@@ -265,15 +275,6 @@
             scope.$apply(function(){
                 scope.addMessage(message);
             })
-
-            // var divdata = $('#data');
-            // var htmldata = "<ion-item class='notification' id='notification-"+ notificationID +"'>\""
-            //                            + msg + 
-            //                "\"<br> ~ " + fromName + "<br>" +
-            //                "<button class='button-positive button button-clear'>Close</button>" +
-            //                "<button class='button-calm button button-clear'>Reply</button>" +
-            //                "</ion-item><br>";
-            // divdata.html(divdata.html() + htmldata);
 
             if (isKnownContact(contacts, fromNumber)) {                    
                 // Known Contacts
