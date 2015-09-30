@@ -91,11 +91,9 @@
                       id='data'>
                 <ion-item class='item-text-wrap msg' ng-repeat="item in messages"
                             class="item-thumbnail-left">
-                    {{ item.body }}
+                    <p>{{ item.body }}</p>
 
-                    <a ng-href="sms:{{item.fromNumber}}" class='button-calm button button-clear enable-pointer-events pull-right'>Reply</a>
-
-                    <br/>
+                    <a ng-href="sms:{{item.fromNumber}}" class='message-reply button-calm button button-clear enable-pointer-events pull-right'>Reply</a>
                     ~ {{ item.fromName }}
                     
                     <ion-delete-button class="message-delete ion-minus-circled button-positive button button-clear"
