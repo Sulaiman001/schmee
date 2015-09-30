@@ -7,28 +7,71 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
 })
 
-.controller('MessagesCtrl', function($scope) {
+.controller('MessagesCtrl', function($scope, $ionicModal) {
   $scope.shouldShowDelete = true;
-  $scope.shouldShowReorder = true;
 
-  $scope.messages = [
+  var testMessages = [
     {
       id: 1,
       fromNumber: "0835592468891",
       body: "test !alert",
       fromName: "Glen Baker"
+    },
+    {
+      id: 2,
+      fromNumber: "0835592468891",
+      body: "test !silent",
+      fromName: "Glen Baker"
     }
   ]
 
+  if (debug) {
+    $scope.messages = testMessages;
+  } else {
+    $scope.messages = [];
+  }
+  $scope.sms = {}
 
   $scope.addMessage = function(msg) {
     $scope.messages.push(msg);
   }
 
   $scope.replySMS = function(fromNumber) {
-    console.log('replySMS clicked');
-    location.href="sms://"+fromNumber;
+    $scope.sms.to = fromNumber;
+    $scope.openModal();
   }
+
+  $scope.sendSMS = function() {
+    if (SMS) {
+      sendSMS();
+    } else {
+       alert( 'SMS plugin not available' ); return;
+    }
+    $scope.closeModal();
+  }
+
+  $ionicModal.fromTemplateUrl('templates/sendMessageModal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+  $scope.openModal = function() {
+    $scope.modal.show();
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+
+  $scope.$on('modal.hidden', function() {
+  });
+
+  $scope.$on('modal.removed', function() {
+  });
 
 })
 
