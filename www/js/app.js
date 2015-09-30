@@ -3,10 +3,6 @@ var debug = true;
 
 angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
-.controller('SchmeeCtrl', function($scope) {
-
-})
-
 .controller('MessagesCtrl', function($scope, $ionicModal) {
   $scope.shouldShowDelete = true;
 
