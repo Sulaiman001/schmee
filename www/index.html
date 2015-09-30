@@ -93,8 +93,7 @@
                             class="item-thumbnail-left">
                     {{ item.body }}
 
-                    <button class='button-calm button button-clear enable-pointer-events pull-right'
-                            ng-click="replySMS(item.fromNumber)">Reply</button>
+                    <a ng-href="sms:{{item.fromNumber}}"><button class='button-calm button button-clear enable-pointer-events pull-right'>Reply</button></a>
 
                     <br/>
                     ~ {{ item.fromName }}

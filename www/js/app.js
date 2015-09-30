@@ -33,6 +33,9 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   $scope.sms = {}
 
   $scope.addMessage = function(msg) {
+    if (msg.fromNumber == null && msg.address != null) {
+      msg.fromNumber = msg.address;
+    }
     $scope.messages.push(msg);
   }
 
@@ -56,9 +59,11 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   }).then(function(modal) {
     $scope.modal = modal;
   });
+
   $scope.openModal = function() {
     $scope.modal.show();
   };
+
   $scope.closeModal = function() {
     $scope.modal.hide();
   };
@@ -174,6 +179,12 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
    $urlRouterProvider.otherwise("/tab/home");
 
 })
+
+.config(['$compileProvider',
+    function( $compileProvider ) {   
+      $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|sms):/);
+    }
+])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
