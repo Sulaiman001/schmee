@@ -281,7 +281,7 @@
                     // Emergency Override
                     if (acceptEmergency(contacts, fromNumber)) {
                         // alert("Known Contact with emergency permission, emergency found.");
-                        scheduleAlert(msg, "Emergency", fromName);
+                        scheduleEmergency(msg, "Emergency", fromName);
                     } else {
                         // alert("Known Contact without emergency permission, emergency found.");
                     }
