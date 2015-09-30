@@ -20,7 +20,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     {
       id: 2,
       fromNumber: "0835592468891",
-      body: "test !silent",
+      body: "test !silent this is going to be a long SMS message.  Some people like to send whole essays in SMS messages.  Need to be semi-longform friendly.",
       fromName: "Glen Baker"
     }
   ]

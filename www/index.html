@@ -89,14 +89,17 @@
             <ion-list ng-controller="MessagesCtrl"
                       show-delete="shouldShowDelete"
                       id='data'>
-                <ion-item ng-repeat="item in messages"
+                <ion-item class='item-text-wrap msg' ng-repeat="item in messages"
                             class="item-thumbnail-left">
                     {{ item.body }}
-                    <br/>
-                    ~ {{ item.fromName }}
+
                     <button class='button-calm button button-clear enable-pointer-events pull-right'
                             ng-click="replySMS(item.fromNumber)">Reply</button>
-                    <ion-delete-button class="ion-minus-circled button-positive button button-clear"
+
+                    <br/>
+                    ~ {{ item.fromName }}
+                    
+                    <ion-delete-button class="message-delete ion-minus-circled button-positive button button-clear"
                        ng-click="messages.splice($index, 1)">
                     </ion-delete-button>
                 </ion-item>
