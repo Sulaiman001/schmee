@@ -2,7 +2,7 @@
 <widget id="com.ionicframework.schmee816934" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Schmee</name>
   <description>
-        Schmee provides better notification and SMS options for Android. Allows trusted senders to set the notification level of their text messages.  Receive !silent, !alert, and !emergency SMS messages. 
+        Schmee provides better notification and SMS options for Android. Allows trusted senders to set the notification level of their text messages.  Receive !silent, !alert, and !emergency SMS messages.
     </description>
   <author email="mochadick@ehab.it" href="https://ehab.it/">
       Mocha Dick

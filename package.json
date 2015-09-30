@@ -1,7 +1,7 @@
 {
   "name": "schmee",
   "version": "1.0.0",
-  "description": "schmee: An Ionic project",
+  "description": "Schmee provides better notification and SMS options for Android. Allows trusted senders to set the notification level of their text messages.  Receive !silent, !alert, and !emergency SMS messages.",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^1.3.3",
