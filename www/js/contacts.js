@@ -89,7 +89,7 @@ function mergeWithSavedContacts(contactsArray) {
 		if (contactsArray == null && savedContacts != null) {
 			return savedContacts;
 		} else if (savedContacts == null && contactsArray != null) {
-			return contactsArray;
+			return defaultContacts(contactsArray);
 		} else if (contactsArray == null && saveContacts == null) {
 			return newContacts;
 		}
@@ -244,15 +244,15 @@ function loadBool(name) {
 
 function loadUnknownNumberVariables() {
 	// if a variable is unset, sets to default value
-	var accept_unknown_alert = loadBool('accept_unknown_alert');
+	var accept_unknown_alert = loadVariable('accept_unknown_alert');
 	if (accept_unknown_alert == null) {
 		saveVariable("accept_unknown_alert", default_accept_unknown_alert);
 	}
-	var accept_unknown_silent = loadBool('accept_unknown_silent');
+	var accept_unknown_silent = loadVariable('accept_unknown_silent');
 	if (accept_unknown_silent == null) {
 		saveVariable("accept_unknown_silent", default_accept_unknown_silent);
 	}
-	var accept_unknown_emergency = loadBool('accept_unknown_emergency');
+	var accept_unknown_emergency = loadVariable('accept_unknown_emergency');
 	if (accept_unknown_emergency == null) {
 		saveVariable("accept_unknown_emergency", default_accept_unknown_emergency);
 	}

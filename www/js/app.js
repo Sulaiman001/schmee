@@ -7,26 +7,26 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   $scope.shouldShowDelete = true;
 
   var testMessages = [
-    {
-      id: 1,
-      fromNumber: "0835592468891",
-      body: "test !alert",
-      fromName: "Glen Baker"
-    },
-    {
-      id: 2,
-      fromNumber: "0835592468891",
-      body: "test !silent this is going to be a long SMS message.  Some people like to send whole essays in SMS messages.  Need to be semi-longform friendly.",
-      fromName: "Glen Baker"
-    }
-  ]
+    // {
+    //   id: 1,
+    //   fromNumber: "0835592468891",
+    //   body: "test !alert",
+    //   fromName: "Glen Baker"
+    // },
+    // {
+    //   id: 2,
+    //   fromNumber: "0835592468891",
+    //   body: "test !silent this is going to be a long SMS message.  Some people like to send whole essays in SMS messages.  Need to be semi-longform friendly.",
+    //   fromName: "Glen Baker"
+    // }
+  ];
 
   if (debug) {
     $scope.messages = testMessages;
   } else {
     $scope.messages = [];
   }
-  $scope.sms = {}
+  $scope.sms = {};
 
   $scope.addMessage = function(msg) {
     if (msg.fromNumber == null && msg.address != null) {

@@ -84,8 +84,8 @@
       <ion-view view-title="Messages">
         <ion-content class="padding">
             <!--<button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
-            <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>-->
-            <div id='status'></div>
+            <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
+            <div id='status'></div>-->
             <ion-list ng-controller="MessagesCtrl"
                       show-delete="shouldShowDelete"
                       id='data'>
@@ -197,14 +197,37 @@
                     // contacts.js and contactsTests.js required
                     contactsTest();
 
-                    data = testNotification;
-                    schmeeNotifications(data);
+                    // data = testNotification;
+                    // schmeeNotifications(data);
 
                 }
             }
 
             loadContacts();
         }
+
+        var dialog;
+        showToast = function (text) {
+            setTimeout(function () {
+                if (device.platform != 'windows') {
+                    window.plugins.toast.showShortBottom(text);
+                } else {
+                    showDialog(text);
+                }
+            }, 100);
+        };
+
+        showDialog = function (text) {
+            if (dialog) {
+                dialog.content = text;
+                return;
+            }
+            dialog = new Windows.UI.Popups.MessageDialog(text);
+            dialog.showAsync().done(function () {
+                dialog = null;
+            });
+        };
+
         
 
         scheduleEmergency = function(txt, type, from) {
@@ -212,8 +235,9 @@
                 id: notificationID,
                 text: txt,
                 title: type + " from " + from,
-                icon: "file://favicon.png",
-                sound: "file://resources/audio/sos.mp3"
+                sound: 'res://com.ionicframework.schmee/raw/sos',
+                icon: 'favicon.png',
+                led: "FF0000"
             });
 
             showToast(txt);
@@ -225,7 +249,8 @@
                 id: notificationID,
                 text: txt,
                 title: type + " from " + from,
-                icon: 'file://favicon.png'
+                icon: 'favicon.png',
+                led: "0000FF"
             });
 
             showToast(txt);
@@ -237,8 +262,9 @@
                 id: notificationID,
                 text: txt,
                 title: type + " from " + from,
-                icon: 'file://favicon.png',
-                sound: null
+                icon: 'favicon.png',
+                sound: null,
+                led: "FFFFFF"
             });
             notificationID++;
         };
