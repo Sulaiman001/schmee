@@ -112,6 +112,14 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
 
 .controller('SettingsCtrl', function($scope) {
+  $scope.toggleEmergencyMode = function() {
+    $scope.emergency_mode = toggleEmergencyMode();
+  }
+
+  $scope.toggleSilenceMode = function() {
+    $scope.silence_mode = toggleSilenceMode();
+  }
+
   $scope.toggleAcceptUnknownAlert = function() {
     $scope.accept_unknown_alert = toggleAcceptUnknownAlert();
   }
@@ -130,6 +138,8 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     $scope.accept_unknown_emergency = loadBool('accept_unknown_emergency');
     $scope.accept_unknown_alert = loadBool('accept_unknown_alert');
     $scope.accept_unknown_silent = loadBool('accept_unknown_silent');
+    $scope.emergency_mode = loadBool('emergency_mode');
+    $scope.silence_mode = loadBool('silence_mode');
   }
 
   $scope.init();

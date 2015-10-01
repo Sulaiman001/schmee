@@ -147,11 +147,16 @@
         <ion-content>
             <ion-list>
                 <ion-item>
-                <h2>Modes</h2>
+                <h2>Modus Operandi</h2>
                 <ion-toggle ng-model="emergency_mode"
                             ng-checked="emergency_mode"
-                            ng-click="">
-                  Emergency Mode - Silence all but trusted !emergency
+                            ng-click="toggleEmergencyMode()">
+                  Emergency Mode - Silence all but !emergency
+                </ion-toggle>
+                <ion-toggle ng-model="silence_mode"
+                            ng-checked="silence_mode"
+                            ng-click="toggleSilenceMode()">
+                  Silence Regular Text Messages
                 </ion-toggle>
                 </ion-item>
                 <ion-item>
@@ -159,19 +164,19 @@
                 <ion-toggle ng-model="accept_unknown_emergency"
                             ng-checked="accept_unknown_emergency"
                             ng-click="toggleAcceptUnknownEmergency()">
-                  Accept !emergency from unknown numbers
+                  Accept !emergency from unknown
                 </ion-toggle>
 
                 <ion-toggle ng-model="accept_unknown_alert"
                             ng-checked="accept_unknown_alert"
                             ng-click="toggleAcceptUnknownAlert()">
-                  Accept !alert from unknown numbers
+                  Accept !alert from unknown
                 </ion-toggle>
 
                 <ion-toggle ng-model="accept_unknown_silent"
                             ng-checked="accept_unknown_silent"
                             ng-click="toggleAcceptUnknownSilent()">
-                  Accept !silent from unknown numbers
+                  Accept !silent from unknown
                 </ion-toggle>
                 </ion-item>
             </ion-list>
@@ -269,8 +274,6 @@
             notificationID++;
         };
 
-        var default_notify = true;
-
         // we will store the intercepted SMS here for later restore
         var smsList = [];
         var interceptEnabled = false;
@@ -302,56 +305,48 @@
                 scope.addMessage(message);
             })
 
-            if (isKnownContact(contacts, fromNumber)) {                    
+
+            if (isKnownContact(contacts, fromNumber)) {  
                 // Known Contacts
                 if (shouldEmergency(msg)) {
-                    // Emergency Override
                     if (acceptEmergency(contacts, fromNumber)) {
-                        // alert("Known Contact with emergency permission, emergency found.");
                         scheduleEmergency(msg, "Emergency", fromName);
-                    } else {
-                        // alert("Known Contact without emergency permission, emergency found.");
                     }
-                } else {
+                } else if (!emergencyMode()) {
                     if (shouldAlert(msg)) {
-                        // Alert Override
                         if (acceptAlerts(contacts, fromNumber)) {
-                            // alert("Known Contact with alert permission, alert found.");
                             scheduleAlert(msg, "Alert", fromName);
-                        } else {
-                            // alert("Known Contact without alert permission, alert found.");
                         }
-                    } else {
-                        // Silent
-                        if (shouldSilent(msg)) {
-                            if (acceptSilent(contacts, fromNumber)) {
-                                // alert("Known Contact with silent permission, silent found.");
-                                scheduleSilent(msg, "Silent", fromName);
-                            } else {
-                                // alert("Known Contact without silent permission, silent found.");
-                            }
+                    } else if (shouldSilent(msg)) {
+                        if (acceptSilent(contacts, fromNumber)) {
+                            scheduleSilent(msg, "Silent", fromName);
                         }
                     }
                 }
-
-                
             } else {
                 // Unknown Contacts
-                if (shouldAlert(msg)) {
-                    if (default_notify) {
-                        // alert("Unknown Contact, default accept emojis, alert found.");
-                        scheduleAlert(msg, "Alert", fromNumber);
-                    } else {
-                        // alert("Unknown Contact, default reject emojis, alert found.");
-                        scheduleSilent(msg, "Silent", fromNumber);
+                if (shouldEmergency(msg)) {
+                    if (acceptUnknownEmergency()) {
+                        scheduleEmergency(msg, "Emergency", fromName);
                     }
-                }
+                } else if (!emergencyMode()) {
 
-                if (shouldSilent(msg)) {
-                    if (default_notify) {
-                        // alert("Unknown Contact, default accept emojis, silent found.");
+                    if (shouldAlert(msg)) {
+                        if (acceptUnknownAlert()) {
+                            scheduleAlert(msg, "Alert", fromNumber);
+                        }
                     } else {
-                        // alert("Unknown Contact, default reject emojis, silent found.");
+                        if (shouldSilent(msg)) {
+                            if (acceptUnknownSilent()) {
+                                scheduleSilent(msg, "Silent", fromName);
+                            }
+                        } else {
+                            if (!silenceMode()) {
+                                scheduleAlert(msg, "Text", fromName);
+                            } else {
+                                scheduleSilent(msg, "Text", fromName);
+                            }
+                        }
                     }
                 }
                 
@@ -509,9 +504,6 @@
             if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
         }
 
-        function toggleDefaultNotify(){
-            default_notify = ! default_notify;
-        }
     </script>
 </body>
 </html>

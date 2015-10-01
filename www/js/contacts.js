@@ -6,6 +6,8 @@ var default_emergency = true;
 var default_accept_unknown_alert = true;
 var default_accept_unknown_silent = true;
 var default_accept_unknown_emergency = true;
+var default_emergency_mode = false;
+var default_silence_mode = true;
 
 
 function stripNumber(num) {
@@ -256,6 +258,14 @@ function loadUnknownNumberVariables() {
 	if (accept_unknown_emergency == null) {
 		saveVariable("accept_unknown_emergency", default_accept_unknown_emergency);
 	}
+	var emergency_mode = loadVariable('emergency_mode');
+	if (emergency_mode == null) {
+		saveVariable('emergency_mode', default_emergency_mode);
+	}
+	var silence_mode = loadVariable('silence_mode');
+	if (silence_mode == null) {
+		saveVariable('silence_mode', default_silence_mode);
+	}
 }
 
 
@@ -286,6 +296,26 @@ function acceptUnknownEmergency() {
 }
 
 
+function emergencyMode() {
+	// returns true if emergency mode, false otherwise
+	var emergency_mode = loadBool('emergency_mode');
+	if (emergency_mode == null) {
+		return default_emergency_mode;
+	}
+	return emergency_mode;
+}
+
+
+function silenceMode() {
+	// returns true if emergency mode, false otherwise
+	var silence_mode = loadBool('silence_mode');
+	if (silence_mode == null) {
+		return default_silence_mode;
+	}
+	return silence_mode;
+}
+
+
 function toggleAcceptUnknownAlert() {
 	var accept_unknown_alert = acceptUnknownAlert();
 	saveVariable('accept_unknown_alert', !accept_unknown_alert);
@@ -304,6 +334,20 @@ function toggleAcceptUnknownEmergency() {
 	var accept_unknown_emergency = acceptUnknownEmergency();
 	saveVariable('accept_unknown_emergency', !accept_unknown_emergency);
 	return !accept_unknown_emergency;
+}
+
+
+function toggleEmergencyMode() {
+	var emergency_mode = emergencyMode();
+	saveVariable('emergency_mode', !emergency_mode);
+	return !emergency_mode;
+}
+
+
+function toggleSilenceMode() {
+	var silence_mode = silenceMode();
+	saveVariable('silence_mode', !silence_mode);
+	return !silence_mode;
 }
 
 
