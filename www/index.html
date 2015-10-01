@@ -210,7 +210,7 @@
         showToast = function (text) {
             setTimeout(function () {
                 if (device.platform != 'windows') {
-                    window.plugins.toast.showShortBottom(text);
+                    window.plugins.toast.showShortTop(text);
                 } else {
                     showDialog(text);
                 }
@@ -235,7 +235,7 @@
                 id: notificationID,
                 text: txt,
                 title: type + " from " + from,
-                sound: 'res://com.ionicframework.schmee/raw/sos',
+                sound: "android.resource://com.ionicframework.schmee/raw/sos",
                 icon: 'favicon.png',
                 led: "FF0000"
             });
