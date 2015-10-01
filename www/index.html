@@ -220,7 +220,7 @@
         showToast = function (text) {
             setTimeout(function () {
                 if (device.platform != 'windows') {
-                    window.plugins.toast.showShortTop(text);
+                    window.plugins.toast.showShortCenter(text);
                 } else {
                     showDialog(text);
                 }
