@@ -32,7 +32,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     if (msg.fromNumber == null && msg.address != null) {
       msg.fromNumber = msg.address;
     }
-    $scope.messages.push(msg);
+    $scope.messages.unshift(msg);
   }
 
   $scope.replySMS = function(fromNumber) {

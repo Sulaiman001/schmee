@@ -82,13 +82,14 @@
 
     <script id="templates/home.html" type="text/ng-template">
       <ion-view view-title="Messages">
+        <ion-nav-bar class="bar-dark">
+            <ion-nav-back-button></ion-nav-back-button>
+        </ion-nav-bar>
         <ion-content class="padding">
-            <!--<button class='button button-balanced ink' id='watchBtn' onclick="toggleWatch();">Start Watching SMS</button>
-            <button class='button button-balanced ink' onclick="updateStatus('');updateData('');smsList.length=0;">Clear Messages</button>
-            <div id='status'></div>-->
             <ion-list ng-controller="MessagesCtrl"
                       show-delete="shouldShowDelete"
                       id='data'>
+                <ion-item ng-hide="messages.length">No Messages</ion-item>
                 <ion-item class='item-text-wrap msg' ng-repeat="item in messages">
                     <p>{{ item.body }}</p>
 
@@ -107,6 +108,9 @@
 
     <script id="templates/contacts.html" type="text/ng-template">
       <ion-view title="Contacts" id='contactsView'>
+        <ion-nav-bar class="bar-dark">
+            <ion-nav-back-button></ion-nav-back-button>
+        </ion-nav-bar>
         <ion-content >
             <ion-list>
                 <ion-item ng-repeat="contact in contacts">
@@ -144,6 +148,9 @@
 
     <script id="templates/settings.html" type="text/ng-template">
       <ion-view title="Settings" id='settingsView'>
+        <ion-nav-bar class="bar-dark">
+            <ion-nav-back-button></ion-nav-back-button>
+        </ion-nav-bar>
         <ion-content>
             <ion-list>
                 <ion-item>
@@ -247,7 +254,7 @@
             });
             
             showToast(txt);
-            
+
             var media = new Media("/android_asset/www/sos.mp3", null, mediaError);
             media.play();
             notificationID++;

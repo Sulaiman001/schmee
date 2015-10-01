@@ -1,9 +1,9 @@
 // Parses SMS messages for valid emojis and commands
 // Written by Mocha Dick
 
-var alert_emoji = "👂";
-var silent_emoji = "😶";
-var emergency_emoji = "❗";
+var alert_emoji = "⏰";
+var silent_emoji = "😴";
+var emergency_emoji = "🆘";
 
 var schedule_emoji = "";
 
