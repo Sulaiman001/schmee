@@ -85,7 +85,6 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
           saveContacts($scope.contacts);
         });
       } else {
-        // saveContacts(testContacts);
         $scope.contacts = mergeWithSavedContacts(testContacts);
         saveContacts($scope.contacts);
       }

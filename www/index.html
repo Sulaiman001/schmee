@@ -115,19 +115,19 @@
                     <ion-checkbox class='assertive' ng-model="contact.emergency"
                                   ng-checked="contact.emergency"
                                   ng-click="toggleEmergency(contact.id)">
-                      Accept !emergency ❗
+                      Accept !sos 
                     </ion-checkbox>
 
                     <ion-checkbox class='positive' ng-model="contact.alerts"
                                   ng-checked="contact.alerts"
                                   ng-click="toggleAlert(contact.id)">
-                      Accept !alert 👂
+                      Accept !alert 
                     </ion-checkbox>
 
                     <ion-checkbox ng-model="contact.silent"
                                   ng-checked="contact.silent"
                                   ng-click="toggleSilent(contact.id)">
-                      Accept !silent 😶
+                      Accept !silent 
                     </ion-checkbox>
 
                     <!--<ion-checkbox class='energized' ng-model="contact.schedule"
@@ -147,11 +147,10 @@
         <ion-content>
             <ion-list>
                 <ion-item>
-                <h2>Modus Operandi</h2>
                 <ion-toggle ng-model="emergency_mode"
                             ng-checked="emergency_mode"
                             ng-click="toggleEmergencyMode()">
-                  Emergency Mode - Silence all but !emergency
+                  Emergency Mode - Silence all but !sos
                 </ion-toggle>
                 <ion-toggle ng-model="silence_mode"
                             ng-checked="silence_mode"
@@ -160,11 +159,10 @@
                 </ion-toggle>
                 </ion-item>
                 <ion-item>
-                <h2>Unknown Numbers</h2>
                 <ion-toggle ng-model="accept_unknown_emergency"
                             ng-checked="accept_unknown_emergency"
                             ng-click="toggleAcceptUnknownEmergency()">
-                  Accept !emergency from unknown
+                  Accept !sos from unknown
                 </ion-toggle>
 
                 <ion-toggle ng-model="accept_unknown_alert"
@@ -233,19 +231,25 @@
             });
         };
 
-        
+        function mediaError(e) {
+            alert("Problem loading sos.mp3");
+            alert(JSON.stringify(e));
+        }        
 
         scheduleEmergency = function(txt, type, from) {
             cordova.plugins.notification.local.schedule({
                 id: notificationID,
                 text: txt,
                 title: type + " from " + from,
-                sound: "android.resource://com.ionicframework.schmee/raw/sos",
-                icon: 'favicon.png',
+                sound: null,
+                icon: 'res://favicon.png',
                 led: "FF0000"
             });
-
+            
             showToast(txt);
+            
+            var media = new Media("/android_asset/www/sos.mp3", null, mediaError);
+            media.play();
             notificationID++;
         }
 
