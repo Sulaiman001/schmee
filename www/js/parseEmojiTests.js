@@ -3,13 +3,29 @@
 /* Simple tests to verify parseEmoji identifies all of
  * the expected emojis.
  */
+function testParseScheduleDateStr() {
+    var errorCount = 0;
+    var testScheduleSMS = "Alert later !schedule 2:30PM";
+    var afterSchedule = parseScheduleDateStr(testScheduleSMS);
+    if (afterSchedule == "2:30PM") {
+        console.log("+ Success!  parseScheduleDateStr is functioning properly");
+    } else {
+        console.log("- Error!  parseScheduleDateStr is not functioning properly");
+        errorCount++;
+    }
+    return errorCount;
+}
+
+
 function parseEmojiTest() {
     var success = true;
     var errorCount = 0;
     var testNoEmoji = "Some plain text message."
     var testAlertSMS = "Some loud ASAP SMS !alert";
     var testSilentSMS = "Some silent SMS !silent";
-    var testEmergencySMS = "Emergency!!! !emergency";
+    var testEmergencySMS = "Emergency!!! !sos";
+    var testScheduleSMS = "Alert later !schedule 2:30PM";
+    var testHowlerSMS = "Danger Zone!!! !howler snd.url";
 
     var return_emoji = "";
     console.log("Testing parseEmoji.js...")
@@ -40,6 +56,22 @@ function parseEmojiTest() {
         errorCount += 1;
     }
 
+    if (parseSchedule(testScheduleSMS)) {
+        console.log("+ Success!  Schedule emoji identified");
+    } else {
+        console.log("- Error identifying schedule emoji");
+        success = false;
+        errorCount += 1;
+    }
+
+    if (parseHowler(testHowlerSMS)) {
+        console.log("+ Success!  Howler emoji identified");
+    } else {
+        console.log("- Error identifying howler emoji");
+        success = false;
+        errorCount += 1;
+    }
+
     return_emoji = parseEmoji(testNoEmoji);
     if (return_emoji != null) {
         console.log("- Error identifying emojiless text");
@@ -48,6 +80,9 @@ function parseEmojiTest() {
     } else {
         console.log("+ Success!  Emojiless text identified");
     }
+
+
+    errorCount += testParseScheduleDateStr();
 
     if (success) {
         console.log("...parseEmoji.js is functioning properly.")

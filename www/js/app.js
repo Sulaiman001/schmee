@@ -40,39 +40,39 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     $scope.openModal();
   }
 
-  $scope.sendSMS = function() {
-    if (SMS) {
-      sendSMS();
-    } else {
-       alert( 'SMS plugin not available' ); return;
-    }
-    $scope.closeModal();
-  }
+  // $scope.sendSMS = function() {
+  //   if (SMS) {
+  //     sendSMS();
+  //   } else {
+  //      alert( 'SMS plugin not available' ); return;
+  //   }
+  //   $scope.closeModal();
+  // }
 
-  $ionicModal.fromTemplateUrl('templates/sendMessageModal.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
+  // $ionicModal.fromTemplateUrl('templates/sendMessageModal.html', {
+  //   scope: $scope,
+  //   animation: 'slide-in-up'
+  // }).then(function(modal) {
+  //   $scope.modal = modal;
+  // });
 
-  $scope.openModal = function() {
-    $scope.modal.show();
-  };
+  // $scope.openModal = function() {
+  //   $scope.modal.show();
+  // };
 
-  $scope.closeModal = function() {
-    $scope.modal.hide();
-  };
+  // $scope.closeModal = function() {
+  //   $scope.modal.hide();
+  // };
 
-  $scope.$on('$destroy', function() {
-    $scope.modal.remove();
-  });
+  // $scope.$on('$destroy', function() {
+  //   $scope.modal.remove();
+  // });
 
-  $scope.$on('modal.hidden', function() {
-  });
+  // $scope.$on('modal.hidden', function() {
+  // });
 
-  $scope.$on('modal.removed', function() {
-  });
+  // $scope.$on('modal.removed', function() {
+  // });
 })
 
 .controller('ContactsCtrl', function($scope, $cordovaContacts) {
@@ -100,6 +100,14 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
   $scope.toggleEmergency = function(id) {
     $scope.contacts = toggleEmergencyContact(id);
+  }
+
+  $scope.toggleSchedule = function(id) {
+    $scope.contacts = toggleScheduleContact(id);
+  }
+
+  $scope.toggleHowler = function(id) {
+    $scope.contacts = toggleHowlerContact(id);
   }
 
   $scope.init = function () {
@@ -131,12 +139,22 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     $scope.accept_unknown_emergency = toggleAcceptUnknownEmergency();
   }
 
+  $scope.toggleAcceptUnknownSchedule = function() {
+    $scope.accept_unknown_schedule = toggleAcceptUnknownSchedule();
+  }
+
+  $scope.toggleAcceptUnknownHowler = function() {
+    $scope.accept_unknown_howler = toggleAcceptUnknownHowler();
+  }
+
   $scope.init = function() {
     loadUnknownNumberVariables();
 
     $scope.accept_unknown_emergency = loadBool('accept_unknown_emergency');
     $scope.accept_unknown_alert = loadBool('accept_unknown_alert');
     $scope.accept_unknown_silent = loadBool('accept_unknown_silent');
+    $scope.accept_unknown_schedule = loadBool('accept_unknown_schedule');
+    $scope.accept_unknown_howler = loadBool('accept_unknown_howler');
     $scope.emergency_mode = loadBool('emergency_mode');
     $scope.silence_mode = loadBool('silence_mode');
   }

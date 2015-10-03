@@ -3,9 +3,13 @@
 var default_alert = true;
 var default_silent = true;
 var default_emergency = true;
+var default_schedule = true;
+var default_howler = true;
 var default_accept_unknown_alert = true;
 var default_accept_unknown_silent = true;
 var default_accept_unknown_emergency = true;
+var default_accept_unknown_schedule = true;
+var default_accept_unknown_howler = true;
 var default_emergency_mode = false;
 var default_silence_mode = true;
 
@@ -142,6 +146,22 @@ function defaultSilent(contactsArray, idx) {
 }
 
 
+function defaultSchedule(contactsArray, idx) {
+	if (contactsArray[idx].schedule == undefined) {
+		contactsArray[idx].schedule = default_schedule;
+	}
+	return contactsArray;
+}
+
+
+function defaultHowler(contactsArray, idx) {
+	if (contactsArray[idx].howler == undefined) {
+		contactsArray[idx].howler = default_howler;
+	}
+	return contactsArray;
+}
+
+
 function isTrue(contactsArray, phoneNumber, field) {
 	for (i = 0; i < contactsArray.length; i++) {
 		var numbersArray = contactsArray[i].phoneNumbers;
@@ -227,6 +247,28 @@ function acceptSilent(contactsArray, phoneNumber) {
 }
 
 
+function acceptSchedule(contactsArray, phoneNumber) {
+	var accept_unknown_schedule = loadBool("accept_unknown_schedule");
+	if (isKnownContact(contactsArray, phoneNumber)) {
+		return isTrue(contactsArray, phoneNumber, "schedule");
+	} else if (accept_unknown_schedule) {
+		return true;
+	}
+	return false;
+}
+
+
+function acceptHowler(contactsArray, phoneNumber) {
+	var accept_unknown_howler = loadBool("accept_unknown_howler");
+	if (isKnownContact(contactsArray, phoneNumber)) {
+		return isTrue(contactsArray, phoneNumber, "howler");
+	} else if (accept_unknown_howler) {
+		return true;
+	}
+	return false;
+}
+
+
 function saveVariable(name, data) {
 	localStorage.setItem(name, data);
 }
@@ -257,6 +299,14 @@ function loadUnknownNumberVariables() {
 	var accept_unknown_emergency = loadVariable('accept_unknown_emergency');
 	if (accept_unknown_emergency == null) {
 		saveVariable("accept_unknown_emergency", default_accept_unknown_emergency);
+	}
+	var accept_unknown_schedule = loadVariable('accept_unknown_schedule');
+	if (accept_unknown_schedule == null) {
+		saveVariable("accept_unknown_schedule", default_accept_unknown_schedule);
+	}
+	var accept_unknown_howler = loadVariable('accept_unknown_howler');
+	if (accept_unknown_howler == null) {
+		saveVariable("accept_unknown_howler", default_accept_unknown_howler);
 	}
 	var emergency_mode = loadVariable('emergency_mode');
 	if (emergency_mode == null) {
@@ -293,6 +343,24 @@ function acceptUnknownEmergency() {
 		return default_accept_unknown_emergency;
 	}
 	return accept_unknown_emergency;
+}
+
+
+function acceptUnknownSchedule() {
+	var accept_unknown_schedule = loadBool('accept_unknown_schedule');
+	if (accept_unknown_schedule == null) {
+		return default_accept_unknown_schedule;
+	}
+	return accept_unknown_schedule;
+}
+
+
+function acceptUnknownHowler() {
+	var accept_unknown_howler = loadBool('accept_unknown_howler');
+	if (accept_unknown_howler == null) {
+		return default_accept_unknown_howler;
+	}
+	return accept_unknown_howler;
 }
 
 
@@ -337,6 +405,20 @@ function toggleAcceptUnknownEmergency() {
 }
 
 
+function toggleAcceptUnknownSchedule() {
+	var accept_unknown_schedule = acceptUnknownSchedule();
+	saveVariable('accept_unknown_schedule', !accept_unknown_schedule);
+	return !accept_unknown_schedule;
+}
+
+
+function toggleAcceptUnknownHowler() {
+	var accept_unknown_howler = acceptUnknownHowler();
+	saveVariable('accept_unknown_howler', !accept_unknown_howler);
+	return !accept_unknown_howler;
+}
+
+
 function toggleEmergencyMode() {
 	var emergency_mode = emergencyMode();
 	saveVariable('emergency_mode', !emergency_mode);
@@ -364,18 +446,26 @@ function toggleContactField(id, field) {
 
 
 function toggleEmergencyContact(id) {
-	var contacts = toggleContactField(id, "emergency");
-	return contacts;
+	return toggleContactField(id, "emergency");
 }
 
 
 function toggleAlertContact(id) {
-	var contacts = toggleContactField(id, "alerts");
-	return contacts;
+	return toggleContactField(id, "alerts");
 }
 
 
 function toggleSilentContact(id) {
-	var contacts = toggleContactField(id, "silent");
-	return contacts;
+	return toggleContactField(id, "silent");
 }
+
+
+function toggleScheduleContact(id) {
+	return toggleContactField(id, "schedule");
+}
+
+
+function toggleHowlerContact(id) {
+	return toggleContactField(id, "howler");
+}
+

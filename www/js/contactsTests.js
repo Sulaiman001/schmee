@@ -5,6 +5,8 @@ var testContacts = [{
       	"emergency": true,
       	"alerts": true,
       	"silent": true,
+      	"schedule": true,
+      	"howler": true,
       	"phoneNumbers": [{
 	      	"id": "4",
 	      	"value": "(559) 246-8891",
@@ -127,6 +129,61 @@ function testToggleEmergency() {
 }
 
 
+function testToggleSchedule() {
+	var errorCount = 0;
+	var preToggleContacts = loadSavedContacts();
+	var preToggle = acceptSchedule(preToggleContacts, "0835598888888");
+	toggleScheduleContact(3);
+	var postToggleContacts = loadSavedContacts();
+	var postToggle = acceptSchedule(postToggleContacts, "0835598888888");
+	if (preToggle != postToggle) {
+		console.log("+ Success!  toggleScheduleContact working as expected");
+	} else {
+		console.log("- Failure!  toggleScheduleContact not working as expected");
+		errorCount++;
+	}
+	return errorCount;
+}
+
+
+function testToggleHowler() {
+	var errorCount = 0;
+	var preToggleContacts = loadSavedContacts();
+	var preToggle = acceptHowler(preToggleContacts, "0835598888888");
+	toggleHowlerContact(3);
+	var postToggleContacts = loadSavedContacts();
+	var postToggle = acceptHowler(postToggleContacts, "0835598888888");
+	if (preToggle != postToggle) {
+		console.log("+ Success!  toggleHowlerContact working as expected");
+	} else {
+		console.log("- Failure!  toggleHowlerContact not working as expected");
+		errorCount++;
+	}
+	return errorCount;
+}
+
+
+function testAcceptEmergency() {
+	var errorCount = 0;
+	if (acceptEmergency(testContacts, "0835592468891")) {
+		console.log("+ Success!  Expected acceptEmergency true");
+	} else {
+		console.log(acceptEmergency(testContacts, "0835592468891"));
+		console.log("- Failure!  Expected acceptEmergency true");
+		errorCount++;
+	}
+
+	if (!acceptEmergency(testContacts, "0835598888888")) {
+		console.log("+ Success!  Expected acceptEmergency false");
+	} else {
+		console.log(acceptEmergency(testContacts, "0835598888888"));
+		console.log("- Failure!  Expected acceptEmergency false");
+		errorCount++;
+	}
+	return errorCount;
+}
+
+
 function testAcceptAlerts() {
 	var errorCount = 0;
 	if (acceptAlerts(testContacts, "0835592468891")) {
@@ -163,6 +220,48 @@ function testAcceptSilent() {
 	} else {
 		console.log(acceptSilent(testContacts, "0835598888888"));
 		console.log("- Failure!  Expected acceptSilent false");
+		errorCount++;
+	}
+	return errorCount;
+}
+
+
+function testAcceptSchedule() {
+	var errorCount = 0;
+	if (acceptSchedule(testContacts, "0835592468891")) {
+		console.log("+ Success!  Expected acceptSchedule true");
+	} else {
+		console.log(acceptSchedule(testContacts, "0835592468891"));
+		console.log("- Failure!  Expected acceptSchedule true");
+		errorCount++;
+	}
+
+	if (!acceptSchedule(testContacts, "0835598888888")) {
+		console.log("+ Success!  Expected acceptSchedule false");
+	} else {
+		console.log(acceptSchedule(testContacts, "0835598888888"));
+		console.log("- Failure!  Expected acceptSchedule false");
+		errorCount++;
+	}
+	return errorCount;
+}
+
+
+function testAcceptHowler() {
+	var errorCount = 0;
+	if (acceptHowler(testContacts, "0835592468891")) {
+		console.log("+ Success!  Expected acceptHowler true");
+	} else {
+		console.log(acceptHowler(testContacts, "0835592468891"));
+		console.log("- Failure!  Expected acceptHowler true");
+		errorCount++;
+	}
+
+	if (!acceptHowler(testContacts, "0835598888888")) {
+		console.log("+ Success!  Expected acceptHowler false");
+	} else {
+		console.log(acceptHowler(testContacts, "0835598888888"));
+		console.log("- Failure!  Expected acceptHowler false");
 		errorCount++;
 	}
 	return errorCount;
@@ -217,18 +316,73 @@ function testToggleAcceptUnknownEmergency() {
 }
 
 
+function testToggleAcceptUnknownEmergency() {
+	var errorCount = 0;
+	var pre_accept_unknown_alert = loadBool('accept_unknown_emergency');
+	toggleAcceptUnknownEmergency();
+	var post_accept_unknown_alert = loadBool('accept_unknown_emergency');
+	if (pre_accept_unknown_alert == post_accept_unknown_alert) {
+		console.log("- Failure!  toggleAcceptUnknownEmergency failed");
+		errorCount++;
+	} else {
+		console.log("+ Success!  toggleAcceptUnknownEmergency functioning properly");
+	}
+	toggleAcceptUnknownEmergency();  // reset variable after test
+	return errorCount;
+}
+
+
+function testToggleAcceptUnknownSchedule() {
+	var errorCount = 0;
+	var pre_accept_unknown_schedule = loadBool('accept_unknown_schedule');
+	toggleAcceptUnknownSchedule();
+	var post_accept_unknown_schedule = loadBool('accept_unknown_schedule');
+	if (pre_accept_unknown_schedule == post_accept_unknown_schedule) {
+		console.log("- Failure!  toggleAcceptUnknownSchedule failed");
+		errorCount++;
+	} else {
+		console.log("+ Success!  toggleAcceptUnknownSchedule functioning properly");
+	}
+	toggleAcceptUnknownSchedule();  // reset variable after test
+	return errorCount;
+}
+
+
+function testToggleAcceptUnknownHowler() {
+	var errorCount = 0;
+	var pre_accept_unknown_howler = loadBool('accept_unknown_howler');
+	toggleAcceptUnknownHowler();
+	var post_accept_unknown_howler = loadBool('accept_unknown_howler');
+	if (pre_accept_unknown_howler == post_accept_unknown_howler) {
+		console.log("- Failure!  toggleAcceptUnknownHowler failed");
+		errorCount++;
+	} else {
+		console.log("+ Success!  toggleAcceptUnknownHowler functioning properly");
+	}
+	toggleAcceptUnknownHowler();  // reset variable after test
+	return errorCount;
+}
+
+
 function contactsTest() {
 	console.log("Testing contacts.js...")
 	var errorCount = 0;
+	errorCount += testAcceptEmergency();
 	errorCount += testAcceptAlerts();
 	errorCount += testAcceptSilent();
+	errorCount += testAcceptSchedule();
+	errorCount += testAcceptHowler();
 	errorCount += testToggleAlerts();
 	errorCount += testToggleSilent();
 	errorCount += testToggleEmergency();
+	errorCount += testToggleSchedule();
+	errorCount += testToggleHowler();
 	errorCount += testGetDisplayName();
 	errorCount += testToggleAcceptUnknownAlert();
 	errorCount += testToggleAcceptUnknownSilent();
 	errorCount += testToggleAcceptUnknownEmergency();
+	errorCount += testToggleAcceptUnknownSchedule();
+	errorCount += testToggleAcceptUnknownHowler();
 
 	if (errorCount == 0) {
 		console.log("...contacts.js is functioning properly.")

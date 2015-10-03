@@ -38,7 +38,6 @@
              
     <ion-nav-view></ion-nav-view>
 
-
     <script id="templates/tabs.html" type="text/ng-template">
       <ion-tabs class="tabs-icon-top tabs-striped">
 
@@ -134,11 +133,17 @@
                       Accept !silent 
                     </ion-checkbox>
 
-                    <!--<ion-checkbox class='energized' ng-model="contact.schedule"
+                    <ion-checkbox class='energized' ng-model="contact.schedule"
                                   ng-checked="contact.schedule"
                                   ng-click="toggleSchedule(contact.id)">
                       Accept !schedule
-                    </ion-checkbox>-->
+                    </ion-checkbox>
+
+                    <ion-checkbox class='royal' ng-model="contact.howler"
+                                  ng-checked="contact.howler"
+                                  ng-click="toggleHowler(contact.id)">
+                      Accept !howler
+                    </ion-checkbox>
                 </ion-item>
             </ion-list>
         </ion-content>
@@ -157,15 +162,16 @@
                 <ion-toggle ng-model="emergency_mode"
                             ng-checked="emergency_mode"
                             ng-click="toggleEmergencyMode()">
-                  Emergency Mode - Silence all but !sos
+                  Emergency Mode - silence all but !sos
                 </ion-toggle>
                 <ion-toggle ng-model="silence_mode"
                             ng-checked="silence_mode"
                             ng-click="toggleSilenceMode()">
-                  Silence Regular Text Messages
+                  Silence regular text messages
                 </ion-toggle>
                 </ion-item>
-                <ion-item>
+
+                <ion-item><h3>Unknown Numbers</h3>
                 <ion-toggle ng-model="accept_unknown_emergency"
                             ng-checked="accept_unknown_emergency"
                             ng-click="toggleAcceptUnknownEmergency()">
@@ -182,6 +188,12 @@
                             ng-checked="accept_unknown_silent"
                             ng-click="toggleAcceptUnknownSilent()">
                   Accept !silent from unknown
+                </ion-toggle>
+
+                <ion-toggle ng-model="accept_unknown_schedule"
+                            ng-checked="accept_unknown_schedule"
+                            ng-click="toggleAcceptUnknownSchedule()">
+                  Accept !schedule from unknown
                 </ion-toggle>
                 </ion-item>
             </ion-list>
@@ -283,6 +295,23 @@
             notificationID++;
         };
 
+
+        scheduleSchedule = function(txt, type, from) {
+            var at = parseDateTime(parseScheduleDateStr(txt));
+            cordova.plugins.notification.local.schedule({
+                id: notificationID,
+                text: txt,
+                title: type + " from " + from,
+                icon: 'favicon.png',
+                led: "0000FF",
+                at: at
+            });
+
+            showToast(txt);
+            notificationID++;
+        };
+
+
         // we will store the intercepted SMS here for later restore
         var smsList = [];
         var interceptEnabled = false;
@@ -326,6 +355,10 @@
                         if (acceptAlerts(contacts, fromNumber)) {
                             scheduleAlert(msg, "Alert", fromName);
                         }
+                    } else if (shouldSchedule(msg)) {
+                        if (acceptUnknownSchedule()) {
+                            scheduleSchedule(msg, "Scheduled", fromNumber);
+                        }
                     } else if (shouldSilent(msg)) {
                         if (acceptSilent(contacts, fromNumber)) {
                             scheduleSilent(msg, "Silent", fromName);
@@ -343,6 +376,10 @@
                     if (shouldAlert(msg)) {
                         if (acceptUnknownAlert()) {
                             scheduleAlert(msg, "Alert", fromNumber);
+                        }
+                    } else if (shouldSchedule(msg)) {
+                        if (acceptUnknownSchedule()) {
+                            scheduleSchedule(msg, "Scheduled", fromNumber);
                         }
                     } else {
                         if (shouldSilent(msg)) {
