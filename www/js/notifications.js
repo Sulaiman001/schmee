@@ -156,9 +156,7 @@ function schmeeNotifications(data) {
     var fromNumber = data.address;
     var msg = data.body;
     var fromName = getDisplayName(contacts, fromNumber);
-    // var id = loadNotificationID();
     var message = {
-        // id: id,
         address: fromNumber,
         body: msg,
         fromName: fromName,
