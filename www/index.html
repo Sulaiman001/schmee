@@ -25,6 +25,7 @@
     <script src="js/parseEmojiTests.js"></script>
     <script src="js/contacts.js"></script>
     <script src="js/contactsTests.js"></script>
+    <script src="js/notifications.js"></script>
     <script src="js/app.js"></script>
 
     <link rel="stylesheet" href="css/base.css">
@@ -172,13 +173,13 @@
                 </ion-item>
 
                 <ion-item><h3>Unknown Numbers</h3>
-                <ion-toggle ng-model="accept_unknown_emergency"
+                <ion-toggle class='assertive' ng-model="accept_unknown_emergency"
                             ng-checked="accept_unknown_emergency"
                             ng-click="toggleAcceptUnknownEmergency()">
                   Accept !sos from unknown
                 </ion-toggle>
 
-                <ion-toggle ng-model="accept_unknown_alert"
+                <ion-toggle class='positive' ng-model="accept_unknown_alert"
                             ng-checked="accept_unknown_alert"
                             ng-click="toggleAcceptUnknownAlert()">
                   Accept !alert from unknown
@@ -190,10 +191,16 @@
                   Accept !silent from unknown
                 </ion-toggle>
 
-                <ion-toggle ng-model="accept_unknown_schedule"
+                <ion-toggle class='energized' ng-model="accept_unknown_schedule"
                             ng-checked="accept_unknown_schedule"
                             ng-click="toggleAcceptUnknownSchedule()">
                   Accept !schedule from unknown
+                </ion-toggle>
+
+                <ion-toggle class='royal' ng-model="accept_unknown_howler"
+                            ng-checked="accept_unknown_howler"
+                            ng-click="toggleAcceptUnknownHowler()">
+                  Accept !howler from unknown
                 </ion-toggle>
                 </ion-item>
             </ion-list>
@@ -203,8 +210,6 @@
 
     <script type='text/javascript'>
         var debug = true;
-
-        var notificationID = 1;
 
         function onLoad() {
             if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
@@ -226,191 +231,17 @@
             loadContacts();
         }
 
-        var dialog;
-        showToast = function (text) {
-            setTimeout(function () {
-                if (device.platform != 'windows') {
-                    window.plugins.toast.showShortCenter(text);
-                } else {
-                    showDialog(text);
-                }
-            }, 100);
-        };
-
-        showDialog = function (text) {
-            if (dialog) {
-                dialog.content = text;
-                return;
-            }
-            dialog = new Windows.UI.Popups.MessageDialog(text);
-            dialog.showAsync().done(function () {
-                dialog = null;
-            });
-        };
-
-        function mediaError(e) {
-            alert("Problem loading sos.mp3");
-            alert(JSON.stringify(e));
-        }        
-
-        scheduleEmergency = function(txt, type, from) {
-            cordova.plugins.notification.local.schedule({
-                id: notificationID,
-                text: txt,
-                title: type + " from " + from,
-                sound: null,
-                icon: 'res://favicon.png',
-                led: "FF0000"
-            });
-            
-            showToast(txt);
-
-            var media = new Media("/android_asset/www/sos.mp3", null, mediaError);
-            media.play();
-            notificationID++;
-        }
-
-        scheduleAlert = function(txt, type, from) {
-            cordova.plugins.notification.local.schedule({
-                id: notificationID,
-                text: txt,
-                title: type + " from " + from,
-                icon: 'favicon.png',
-                led: "0000FF"
-            });
-
-            showToast(txt);
-            notificationID++;
-        };
-
-        scheduleSilent = function(txt, type, from) {
-            cordova.plugins.notification.local.schedule({
-                id: notificationID,
-                text: txt,
-                title: type + " from " + from,
-                icon: 'favicon.png',
-                sound: null,
-                led: "FFFFFF"
-            });
-            notificationID++;
-        };
-
-
-        scheduleSchedule = function(txt, type, from) {
-            var at = parseDateTime(parseScheduleDateStr(txt));
-            cordova.plugins.notification.local.schedule({
-                id: notificationID,
-                text: txt,
-                title: type + " from " + from,
-                icon: 'favicon.png',
-                led: "0000FF",
-                at: at
-            });
-
-            showToast(txt);
-            notificationID++;
-        };
-
-
-        // we will store the intercepted SMS here for later restore
-        var smsList = [];
-        var interceptEnabled = false;
-        var watching = false;
-
-        var testNotification = {
-            id: 3,
-            address: '0835598888888',
-            body: 'test !emergency',
-            displayName: "Mocha Dick"
-        }
-
-        function schmeeNotifications(data) {
-            var contacts = loadSavedContacts();
-            var fromNumber = data.address;
-            var msg = data.body;
-            var fromName = getDisplayName(contacts, fromNumber);
-
-            var message = {
-                id: notificationID,
-                address: fromNumber,
-                body: msg,
-                fromName: fromName
-            }
-
-            // push to MessagesCtrl scope
-            var scope = angular.element($("#data")).scope();
-            scope.$apply(function(){
-                scope.addMessage(message);
-            })
-
-
-            if (isKnownContact(contacts, fromNumber)) {  
-                // Known Contacts
-                if (shouldEmergency(msg)) {
-                    if (acceptEmergency(contacts, fromNumber)) {
-                        scheduleEmergency(msg, "Emergency", fromName);
-                    }
-                } else if (!emergencyMode()) {
-                    if (shouldAlert(msg)) {
-                        if (acceptAlerts(contacts, fromNumber)) {
-                            scheduleAlert(msg, "Alert", fromName);
-                        }
-                    } else if (shouldSchedule(msg)) {
-                        if (acceptUnknownSchedule()) {
-                            scheduleSchedule(msg, "Scheduled", fromNumber);
-                        }
-                    } else if (shouldSilent(msg)) {
-                        if (acceptSilent(contacts, fromNumber)) {
-                            scheduleSilent(msg, "Silent", fromName);
-                        }
-                    }
-                }
-            } else {
-                // Unknown Contacts
-                if (shouldEmergency(msg)) {
-                    if (acceptUnknownEmergency()) {
-                        scheduleEmergency(msg, "Emergency", fromName);
-                    }
-                } else if (!emergencyMode()) {
-
-                    if (shouldAlert(msg)) {
-                        if (acceptUnknownAlert()) {
-                            scheduleAlert(msg, "Alert", fromNumber);
-                        }
-                    } else if (shouldSchedule(msg)) {
-                        if (acceptUnknownSchedule()) {
-                            scheduleSchedule(msg, "Scheduled", fromNumber);
-                        }
-                    } else {
-                        if (shouldSilent(msg)) {
-                            if (acceptUnknownSilent()) {
-                                scheduleSilent(msg, "Silent", fromName);
-                            }
-                        } else {
-                            if (!silenceMode()) {
-                                scheduleAlert(msg, "Text", fromName);
-                            } else {
-                                scheduleSilent(msg, "Text", fromName);
-                            }
-                        }
-                    }
-                }
-                
-            }
-        }
-
         function initApp() {
             if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
-            
+                
             // SMS Arrived
             document.addEventListener('onSMSArrive', function(e){
                 var data = e.data;
-                
-                smsList.push( data );
-                
-                updateStatus('SMS arrived, count: ' + smsList.length );
-                
-                schmeeNotifications(data);
+                // if the timestamps date_sent are close enough together, attach the message to the previous schmeeNotification and then act on any commands
+                var old_html = $("#test").html();
+                $('#test').html(old_html + "\n"+JSON.stringify(data));
+                // schmeeNotifications(data);
+                bufferSMS(data);
             });
 
             if (SMS) {
@@ -440,6 +271,39 @@
                 }
             }, false);
         }
+
+
+        var smsBuffer = [];
+
+        function mergeBuffer() {
+            if (smsBuffer.length > 1) {
+                if (smsBuffer[0].address == smsBuffer[1].address) {
+                    smsBuffer[0].body = smsBuffer[0].body + smsBuffer[1].body;
+                    smsBuffer.splice(1, 1);
+                    mergeBuffer();
+                } else {
+                    schmeeNotifications(smsBuffer[0]);
+                    schmeeNotifications(smsBuffer[1]);
+                    smsBuffer.splice(0,2);
+                    mergeBuffer();
+                }
+            } else if (smsBuffer.length == 1) {
+                schmeeNotifications(smsBuffer[0]);
+                smsBuffer = [];
+            }
+        }
+
+
+        function bufferSMS(sms) {
+            // called when an sms is received, adds sms to buffer
+            if (sms.body.length < 153 && smsBuffer.length == 0) {
+                schmeeNotifications(sms);
+            } else {
+                smsBuffer.push(sms);
+                setTimeout(mergeBuffer, 1000);
+            }
+        }
+
         
         function update( id, str ) {
             $('div#' + id).html( str );

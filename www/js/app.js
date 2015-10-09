@@ -1,4 +1,4 @@
-// Schmee Notification Improvements by Mocha Dick
+// Schmee Notifications app.js by Mocha Dick
 var debug = true;
 
 angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])

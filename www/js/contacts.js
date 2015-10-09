@@ -23,6 +23,23 @@ function stripNumber(num) {
 }
 
 
+function saveVariable(name, data) {
+	localStorage.setItem(name, data);
+}
+
+
+function loadVariable(name) {
+	// returns localStorage string value given a key
+	return localStorage.getItem(name);
+}
+
+
+function loadBool(name) {
+	// converts stored localStorage string to Boolean
+	return ("true" === loadVariable(name));
+}
+
+
 function onContactsLoadSuccess(contacts) {
     // js = callback hell
     var mergedContacts = mergeWithSavedContacts(contacts);
@@ -117,6 +134,8 @@ function defaultContacts(contactsArray) {
 		contactsArray = defaultAlert(contactsArray, i);
 		contactsArray = defaultSilent(contactsArray, i);
 		contactsArray = defaultEmergency(contactsArray, i);
+		contactsArray = defaultSchedule(contactsArray, i);
+		contactsArray = defaultHowler(contactsArray, i);
 	}
 	return contactsArray;	
 }
@@ -266,23 +285,6 @@ function acceptHowler(contactsArray, phoneNumber) {
 		return true;
 	}
 	return false;
-}
-
-
-function saveVariable(name, data) {
-	localStorage.setItem(name, data);
-}
-
-
-function loadVariable(name) {
-	// returns localStorage string value given a key
-	return localStorage.getItem(name);
-}
-
-
-function loadBool(name) {
-	// converts stored localStorage string to Boolean
-	return ("true" === loadVariable(name));
 }
 
 

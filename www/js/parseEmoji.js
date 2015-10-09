@@ -105,6 +105,18 @@ function parseDateTime(dateStr) {
 }
 
 
+function parseHowlerSoundUrl(sms) {
+    // returns the str following the identified !howler emoji
+    for (i=0;i<howler_emojis.length;i++) {
+        if (sms.indexOf(howler_emojis[i]) > 0) {
+            var afterSchedule = sms.substr(sms.indexOf(howler_emojis[i]) + howler_emojis[i].length);
+            return "http://"+afterSchedule.trim();
+        }
+    }
+    return null;
+}
+
+
 /* Function to return the dominant valid emoji in a given string.
  * Returns null if string has no valid emojis.
  * @param {String} sms   Required.  String to check for emojis.

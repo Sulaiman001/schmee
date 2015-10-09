@@ -17,6 +17,20 @@ function testParseScheduleDateStr() {
 }
 
 
+function testParseHowlerSoundUrl() {
+    var errorCount = 0;
+    var testHowler = "Danger Zone !howler ehab.it/dangerzone.mp3"
+    var url = parseHowlerSoundUrl(testHowler);
+    if (url == "http://ehab.it/dangerzone.mp3") {
+        console.log("+ Success!  parseHowlerSoundUrl is functioning properly");
+    } else {
+        console.log("- Error!  parseHowlerSoundUrl is not functioning properly");
+        errorCount++;
+    }
+    return errorCount;
+}
+
+
 function parseEmojiTest() {
     var success = true;
     var errorCount = 0;
@@ -83,10 +97,13 @@ function parseEmojiTest() {
 
 
     errorCount += testParseScheduleDateStr();
+    errorCount += testParseHowlerSoundUrl();
 
-    if (success) {
+    if (errorCount == 0) {
         console.log("...parseEmoji.js is functioning properly.")
     } else {
         console.log("...parseEmoji.js encountered errors.", errorCount)
     }
+
+
 }
