@@ -64,7 +64,7 @@ scheduleEmergency = function(txt, type, from) {
         text: txt,
         title: type + " from " + from,
         sound: null,
-        icon: 'favicon.png',
+        icon: 'whale_red.png',
         led: "FF0000"
     });
     
@@ -80,7 +80,7 @@ scheduleAlert = function(txt, type, from) {
         id: id,
         text: txt,
         title: type + " from " + from,
-        icon: 'favicon.png',
+        icon: 'whale_blue.png',
         led: "0000FF"
     });
 
@@ -94,7 +94,7 @@ scheduleSilent = function(txt, type, from) {
         id: id,
         text: txt,
         title: type + " from " + from,
-        icon: 'favicon.png',
+        icon: 'whale.png',
         sound: null,
         led: "FFFFFF"
     });
@@ -109,7 +109,7 @@ scheduleSchedule = function(txt, type, from) {
         id: id,
         text: txt,
         title: type + " from " + from,
-        icon: 'favicon.png',
+        icon: 'whale_yellow.png',
         led: "0000FF",
         at: at
     });
@@ -126,8 +126,8 @@ scheduleHowler = function(txt, type, from) {
         id: id,
         text: txt,
         title: type + " from " + from,
-        icon: 'favicon .png',
-        led: "0000FF",
+        icon: 'whale_purple.png',
+        led: "800080",
         sound: null
     });
 

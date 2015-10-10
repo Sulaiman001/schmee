@@ -237,9 +237,8 @@
             // SMS Arrived
             document.addEventListener('onSMSArrive', function(e){
                 var data = e.data;
-                // if the timestamps date_sent are close enough together, attach the message to the previous schmeeNotification and then act on any commands
-                var old_html = $("#test").html();
-                $('#test').html(old_html + "\n"+JSON.stringify(data));
+                // var old_html = $("#test").html();
+                // $('#test').html(old_html + "\n"+JSON.stringify(data));
                 // schmeeNotifications(data);
                 bufferSMS(data);
             });
