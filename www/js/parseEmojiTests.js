@@ -1,8 +1,6 @@
 // Tests for parseEmoji.js
+// Written by Mocha Dick
 
-/* Simple tests to verify parseEmoji identifies all of
- * the expected emojis.
- */
 function testParseScheduleDateStr() {
     var errorCount = 0;
     var testScheduleSMS = "Alert later !schedule 2:30PM";
@@ -10,7 +8,49 @@ function testParseScheduleDateStr() {
     if (afterSchedule == "2:30PM") {
         console.log("+ Success!  parseScheduleDateStr is functioning properly");
     } else {
-        console.log("- Error!  parseScheduleDateStr is not functioning properly");
+        console.log("- Error!  parseScheduleDateStr failed the first test");
+        errorCount++;
+    }
+
+    var testScheduleSMS2 = "Alert for later !schedule 1am";
+    afterSchedule = parseScheduleDateStr(testScheduleSMS2);
+    if (afterSchedule == "1am") {
+        console.log("+ Success!  parseScheduleDateStr is functioning properly");
+    } else {
+        console.log("- Error!  parseScheduleDateStr failed the second test");
+        errorCount++;
+    }
+
+    return errorCount;
+}
+
+
+function testParseDateTime() {
+    errorCount = 0;
+    var testScheduleSMS = "Alert later !schedule 2:30PM";
+    var dateTime = parseDateTime(parseScheduleDateStr(testScheduleSMS));
+    var expectedTime = new Date();
+    expectedTime.setHours(14);
+    expectedTime.setMinutes(30);
+    if (dateTime.getTime() == expectedTime.getTime()) {
+        console.log("+ Success!  parseDateTime passed first test");
+    } else {
+        console.log("dateTime: " + dateTime);
+        console.log("expectedTime: " + expectedTime);
+        console.log("- Error!  parseDateTime failed the first test");
+        errorCount++;
+    }
+
+    var testScheduleSMS2 = "Alert for later !schedule 1am";
+    dateTime = parseDateTime(parseScheduleDateStr(testScheduleSMS2));
+    expectedTime.setHours(1);
+    expectedTime.setMinutes(0);
+    if (dateTime.getTime() == expectedTime.getTime()) {
+        console.log("+ Success!  parseDateTime passed second test");
+    } else {
+        console.log("dateTime: " + dateTime);
+        console.log("expectedTime: " + expectedTime);
+        console.log("- Error!  parseDateTime failed the second test");
         errorCount++;
     }
     return errorCount;
@@ -25,6 +65,22 @@ function testParseHowlerSoundUrl() {
         console.log("+ Success!  parseHowlerSoundUrl is functioning properly");
     } else {
         console.log("- Error!  parseHowlerSoundUrl is not functioning properly");
+        errorCount++;
+    }
+    return errorCount;
+}
+
+
+function testConvertTo24Hours() {
+    var errorCount = 0;
+    var test = "2:30PM"
+    var converted = convertTo24Hours(test);
+    if (converted == "14:30") {
+       console.log("+ Success!  convertTo24Hours is functioning properly");
+    } else {
+        console.log("Input Str: " + test);
+        console.log("Converted: " + converted);
+        console.log("- Error!  convertTo24Hours is not functioning properly");
         errorCount++;
     }
     return errorCount;
@@ -97,6 +153,8 @@ function parseEmojiTest() {
 
 
     errorCount += testParseScheduleDateStr();
+    errorCount += testConvertTo24Hours();
+    errorCount += testParseDateTime();
     errorCount += testParseHowlerSoundUrl();
 
     if (errorCount == 0) {

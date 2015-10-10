@@ -35,6 +35,7 @@ function occurrences(string, subString, allowOverlapping){
     return(n);
 }
 
+
 function parseAlert(sms) {
     for (i=0;i<alert_emojis.length;i++) {
         if (sms.indexOf(alert_emojis[i]) > 0) {
@@ -43,6 +44,7 @@ function parseAlert(sms) {
     }
     return false
 }
+
 
 function parseEmergency(sms) {
     for (i=0;i<emergency_emojis.length;i++) {
@@ -53,6 +55,7 @@ function parseEmergency(sms) {
     return false
 }
 
+
 function parseSilent(sms) {
     for (i=0;i<silent_emojis.length;i++) {
         if (sms.indexOf(silent_emojis[i]) > 0) {
@@ -62,6 +65,7 @@ function parseSilent(sms) {
     return false
 }
 
+
 function parseSchedule(sms) {
     for (i=0;i<schedule_emojis.length;i++) {
         if (sms.indexOf(schedule_emojis[i]) > 0) {
@@ -70,6 +74,17 @@ function parseSchedule(sms) {
     }
     return false
 }
+
+
+function parseHowler(sms) {
+    for (i=0;i<howler_emojis.length;i++) {
+        if (sms.indexOf(howler_emojis[i]) > 0) {
+            return true;
+        }
+    }
+    return false
+}
+
 
 function parseScheduleDateStr(sms) {
     // returns the str following the identified !schedule emoji
@@ -82,13 +97,47 @@ function parseScheduleDateStr(sms) {
     return null;
 }
 
-function parseHowler(sms) {
-    for (i=0;i<howler_emojis.length;i++) {
-        if (sms.indexOf(howler_emojis[i]) > 0) {
-            return true;
-        }
+
+function hasPM(dateStr) {
+    if (
+        // dateStr.indexOf("AM") != -1 || dateStr.indexOf("A.M") != -1 ||
+        dateStr.indexOf("PM") != -1 || dateStr.indexOf("P.M") != -1 ||
+        // dateStr.indexOf("am") != -1 || dateStr.indexOf("a.m") != -1 ||
+        dateStr.indexOf("pm") != -1 || dateStr.indexOf("p.m") != -1) {
+        return true;
     }
-    return false
+    return false;
+}
+
+
+function convertTo24Hours(dateStr) {
+    // Convert a string like 10:05:23 PM to 24h format, returns like [22,5,23]
+
+    var hours = Number(dateStr.match(/^(\d\d?)/)[1]);
+    var minutes = Number(dateStr.match(/:(\d\d?)/)[1]);
+    var AMPM = dateStr.match(/(.AM|PM|A.M|P.M|A.M.|P.M.)$/i)[1];
+    if (AMPM == 'PM' || AMPM == 'pm' ||
+        AMPM == 'P.M' || AMPM == 'p.m' && hours<12) 
+    {
+        hours = hours+12;
+    }
+    else if (AMPM == 'AM' || AMPM == "am" && hours==12)
+    {
+        hours = hours-12;
+    }
+
+    var sHours = hours.toString();
+    var sMinutes = minutes.toString();
+
+    if(hours<10)
+    {
+        sHours = "0" + sHours;
+    }
+    else if(minutes<10) {
+        sMinutes = "0" + sMinutes;
+    }
+
+    return sHours + ":" + sMinutes;    
 }
 
 
@@ -98,6 +147,9 @@ var test_times = ['1:00 pm','1:00 p.m.','1:00 p','1:00pm',
 
 function parseDateTime(dateStr) {
     var d = new Date();
+    if (hasPM(dateStr)) {
+        dateStr = convertTo24Hours(dateStr);
+    }
     var time = dateStr.match(/(\d+)(?::(\d\d))?\s*(p?)/);
     d.setHours( parseInt(time[1]) + (time[3] ? 12 : 0) );
     d.setMinutes( parseInt(time[2]) || 0 );
