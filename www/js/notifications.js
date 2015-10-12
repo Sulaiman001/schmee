@@ -1,15 +1,18 @@
 // Schmee notifications.js by Mocha Dick
+
 function saveNotificationID(id) {
-	saveVariable("notificationID", id);
+	// saveVariable("notificationID", id);
+    notificationID = id;
 }
 
-
+var notificationID = 0;
 function loadNotificationID() {
-	var id = loadVariable("notificationID");
-	if (id != null) {
-		return id;
-	}
-	return 1;
+	// var id = loadVariable("notificationID");
+	// if (id != null) {
+	// 	return id;
+	// }
+	// return 1;
+    return notificationID;
 }
 
 
@@ -182,8 +185,8 @@ function schmeeNotifications(data) {
                     scheduleAlert(msg, "Alert", fromName);
                 }
             } else if (shouldSchedule(msg)) {
-                if (acceptUnknownSchedule()) {
-                    scheduleSchedule(msg, "Schedule", fromNumber);
+                if (acceptSchedule(contacts, fromNumber)) {
+                    scheduleSchedule(msg, "Schedule", fromName);
                 }
             } else if (shouldSilent(msg)) {
                 if (acceptSilent(contacts, fromNumber)) {
@@ -205,11 +208,11 @@ function schmeeNotifications(data) {
 
             if (shouldAlert(msg)) {
                 if (acceptUnknownAlert()) {
-                    scheduleAlert(msg, "Alert", fromNumber);
+                    scheduleAlert(msg, "Alert", fromName);
                 }
             } else if (shouldSchedule(msg)) {
                 if (acceptUnknownSchedule()) {
-                    scheduleSchedule(msg, "Schedule", fromNumber);
+                    scheduleSchedule(msg, "Schedule", fromName);
                 }
             } else {
                 if (shouldSilent(msg)) {

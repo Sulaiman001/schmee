@@ -27,7 +27,7 @@ function testParseScheduleDateStr() {
 
 function testParseDateTime() {
     errorCount = 0;
-    var testScheduleSMS = "Alert later !schedule 2:30PM";
+    var testScheduleSMS = "Alert later !schedule 2:30 PM";
     var dateTime = parseDateTime(parseScheduleDateStr(testScheduleSMS));
     var expectedTime = new Date();
     expectedTime.setHours(14);
@@ -35,8 +35,8 @@ function testParseDateTime() {
     if (dateTime.getTime() == expectedTime.getTime()) {
         console.log("+ Success!  parseDateTime passed first test");
     } else {
-        console.log("dateTime: " + dateTime);
-        console.log("expectedTime: " + expectedTime);
+        console.log("dateTime: " + dateTime.getTime());
+        console.log("expectedTime: " + expectedTime.getTime());
         console.log("- Error!  parseDateTime failed the first test");
         errorCount++;
     }
@@ -48,8 +48,8 @@ function testParseDateTime() {
     if (dateTime.getTime() == expectedTime.getTime()) {
         console.log("+ Success!  parseDateTime passed second test");
     } else {
-        console.log("dateTime: " + dateTime);
-        console.log("expectedTime: " + expectedTime);
+        console.log("dateTime: " + dateTime.getTime());
+        console.log("expectedTime: " + expectedTime.getTime());
         console.log("- Error!  parseDateTime failed the second test");
         errorCount++;
     }

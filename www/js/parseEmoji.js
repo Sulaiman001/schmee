@@ -115,7 +115,10 @@ function convertTo24Hours(dateStr) {
 
     var hours = Number(dateStr.match(/^(\d\d?)/)[1]);
     var minutes = Number(dateStr.match(/:(\d\d?)/)[1]);
-    var AMPM = dateStr.match(/(.AM|PM|A.M|P.M|A.M.|P.M.)$/i)[1];
+    var AMPM = dateStr.match(/(.AM|PM|A.M|P.M|A.M.|P.M.)$/i);
+    if (AMPM != null) {
+        AMPM = AMPM[1];
+    }
     if (AMPM == 'PM' || AMPM == 'pm' ||
         AMPM == 'P.M' || AMPM == 'p.m' && hours<12) 
     {

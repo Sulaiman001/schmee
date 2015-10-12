@@ -257,14 +257,22 @@
 
             // Background Mode
             document.addEventListener('deviceready', function () {
-                cordova.plugins.backgroundMode.setDefaults({ text:'Watching incoming SMS.'});
+                cordova.plugins.backgroundMode.setDefaults({
+                    title: "Schmee in the background",
+                    text: 'Watching incoming SMS.',
+                    icon: "icon",
+                    smallIcon: "icon24"
+                });
 
                 cordova.plugins.backgroundMode.enable();
 
                 cordova.plugins.backgroundMode.onactivate = function () {
                     setTimeout(function () {
                         cordova.plugins.backgroundMode.configure({
-                            text:'Watching for incoming SMS....'
+                            title: "Schmee in the background",
+                            text: 'Watching for incoming SMS....',
+                            icon: "icon",
+                            smallIcon: "icon24"
                         });
                     }, 5000);
                 }
@@ -299,7 +307,7 @@
                 schmeeNotifications(sms);
             } else {
                 smsBuffer.push(sms);
-                setTimeout(mergeBuffer, 1000);
+                setTimeout(mergeBuffer, 500);
             }
         }
 
