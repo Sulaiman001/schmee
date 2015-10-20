@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+
+    <title>Schmee</title>
+
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
+
+    <!-- Library Scripts -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
+
+    <script type="text/javascript" src="lib/ngCordova/dist/ng-cordova.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/parseEmoji.js"></script>
+    <script src="js/parseEmojiTests.js"></script>
+    <script src="js/contacts.js"></script>
+    <script src="js/contactsTests.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/app.js"></script>
+
+    <link rel="stylesheet" href="css/base.css">
+</head>
+<body ng-app="schmee" onload="onLoad()" class="platform-android platform-cordova platform-webview">
+    
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button>
+      </ion-nav-back-button>
+    </ion-nav-bar>
+             
+    <ion-nav-view></ion-nav-view>
+
+    <script id="templates/tabs.html" type="text/ng-template">
+      <ion-tabs class="tabs-icon-top tabs-striped">
+
+        <ion-tab title="Messages" icon="ion-email" href="#/tab/home">
+          <ion-nav-view name="home-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab title="Contacts" icon="ion-person-stalker" ui-sref="tabs.contacts">
+          <ion-nav-view name="contacts-tab"></ion-nav-view>
+        </ion-tab>
+
+        <ion-tab title="Settings" icon="ion-gear-a" ui-sref="tabs.settings">
+          <ion-nav-view name="settings-tab"></ion-nav-view>
+        </ion-tab>
+
+      </ion-tabs>
+    </script>
+
+    <script id="templates/sendMessageModal.html" type="text/ng-template">
+      <ion-modal-view>
+        <ion-header-bar>
+          <h1 class="title">Send Message</h1>
+        </ion-header-bar>
+        <ion-content class='padding'>
+          <div class="list">
+            <label class="item item-input">
+              <span class="input-label">To</span>
+              <input type="text" id='smsTo' ng-model="sms.to">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Message</span>
+              <textarea rows='5' autofocus id='smsBody' type="text" ng-model="sms.body"></textarea>
+            </label>
+          </div>
+
+          <button class="button button-striped" ng-click="closeModal()">Cancel</button>
+          <button class="button button-balanced" ng-click="sendSMS()">Send</button>
+        </ion-content>
+      </ion-modal-view>
+    </script>
+
+    <script id="templates/home.html" type="text/ng-template">
+      <ion-view view-title="Messages">
+        <ion-nav-bar class="bar-dark">
+            <ion-nav-back-button></ion-nav-back-button>
+        </ion-nav-bar>
+        <ion-content class="padding">
+            <ion-list ng-controller="MessagesCtrl"
+                      show-delete="shouldShowDelete"
+                      id='data'>
+                <ion-item ng-hide="messages.length">No Messages</ion-item>
+                <ion-item class='item-text-wrap msg' ng-repeat="item in messages">
+                    <p>{{ item.body }}</p>
+
+                    <a ng-href="sms:{{item.fromNumber}}" class='message-reply button-calm button button-clear enable-pointer-events pull-right'>Reply</a>
+                    ~ {{ item.fromName }}
+                    
+                    <ion-delete-button class="message-delete ion-minus-circled button-positive button button-clear"
+                       ng-click="messages.splice($index, 1)">
+                    </ion-delete-button>
+                </ion-item>
+            </ion-list>
+            <div id="test"></div>
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script id="templates/contacts.html" type="text/ng-template">
+      <ion-view title="Contacts" id='contactsView'>
+        <ion-nav-bar class="bar-dark">
+            <ion-nav-back-button></ion-nav-back-button>
+        </ion-nav-bar>
+        <ion-content >
+            <ion-list>
+                <ion-item ng-repeat="contact in contacts">
+                    <h2>{{contact.displayName}}</h2>
+
+                    <ion-checkbox class='assertive' ng-model="contact.emergency"
+                                  ng-checked="contact.emergency"
+                                  ng-click="toggleEmergency(contact.id)">
+                      Accept !sos 
+                    </ion-checkbox>
+
+                    <ion-checkbox class='positive' ng-model="contact.alerts"
+                                  ng-checked="contact.alerts"
+                                  ng-click="toggleAlert(contact.id)">
+                      Accept !alert 
+                    </ion-checkbox>
+
+                    <ion-checkbox ng-model="contact.silent"
+                                  ng-checked="contact.silent"
+                                  ng-click="toggleSilent(contact.id)">
+                      Accept !silent 
+                    </ion-checkbox>
+
+                    <ion-checkbox class='energized' ng-model="contact.schedule"
+                                  ng-checked="contact.schedule"
+                                  ng-click="toggleSchedule(contact.id)">
+                      Accept !schedule
+                    </ion-checkbox>
+
+                    <ion-checkbox class='royal' ng-model="contact.howler"
+                                  ng-checked="contact.howler"
+                                  ng-click="toggleHowler(contact.id)">
+                      Accept !howler
+                    </ion-checkbox>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+      </ion-view>
+    </script>
+    
+
+    <script id="templates/settings.html" type="text/ng-template">
+      <ion-view title="Settings" id='settingsView'>
+        <ion-nav-bar class="bar-dark">
+            <ion-nav-back-button></ion-nav-back-button>
+        </ion-nav-bar>
+        <ion-content>
+            <ion-list>
+                <ion-item>
+                <ion-toggle ng-model="emergency_mode"
+                            ng-checked="emergency_mode"
+                            ng-click="toggleEmergencyMode()">
+                  Emergency Mode - silence all but !sos
+                </ion-toggle>
+                <ion-toggle ng-model="silence_mode"
+                            ng-checked="silence_mode"
+                            ng-click="toggleSilenceMode()">
+                  Silence regular text messages
+                </ion-toggle>
+                </ion-item>
+
+                <ion-item><h3>Unknown Numbers</h3>
+                <ion-toggle class='assertive' ng-model="accept_unknown_emergency"
+                            ng-checked="accept_unknown_emergency"
+                            ng-click="toggleAcceptUnknownEmergency()">
+                  Accept !sos from unknown
+                </ion-toggle>
+
+                <ion-toggle class='positive' ng-model="accept_unknown_alert"
+                            ng-checked="accept_unknown_alert"
+                            ng-click="toggleAcceptUnknownAlert()">
+                  Accept !alert from unknown
+                </ion-toggle>
+
+                <ion-toggle ng-model="accept_unknown_silent"
+                            ng-checked="accept_unknown_silent"
+                            ng-click="toggleAcceptUnknownSilent()">
+                  Accept !silent from unknown
+                </ion-toggle>
+
+                <ion-toggle class='energized' ng-model="accept_unknown_schedule"
+                            ng-checked="accept_unknown_schedule"
+                            ng-click="toggleAcceptUnknownSchedule()">
+                  Accept !schedule from unknown
+                </ion-toggle>
+
+                <ion-toggle class='royal' ng-model="accept_unknown_howler"
+                            ng-checked="accept_unknown_howler"
+                            ng-click="toggleAcceptUnknownHowler()">
+                  Accept !howler from unknown
+                </ion-toggle>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script type='text/javascript'>
+        var debug = true;
+
+        function onLoad() {
+            if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
+                document.addEventListener('deviceready', initApp, false);
+            } else {
+                updateStatus('Must be run on a mobile device for full functionality.');
+                
+                // Test Components
+                if (debug) {
+                    // parseEmoji.js and parseEmojiTests.js required
+                    parseEmojiTest();
+                    // contacts.js and contactsTests.js required
+                    contactsTest();
+
+                    // schmeeNotifications(testNotification);
+                }
+            }
+
+            loadContacts();
+        }
+
+        function initApp() {
+            if (! SMS ) { alert( 'SMS plugin not ready' ); return; }
+                
+            // SMS Arrived
+            document.addEventListener('onSMSArrive', function(e){
+                var data = e.data;
+                // var old_html = $("#test").html();
+                // $('#test').html(old_html + "\n"+JSON.stringify(data));
+                // schmeeNotifications(data);
+                bufferSMS(data);
+            });
+
+            if (SMS) {
+                toggleWatch();
+                // toggleIntercept();
+            }
+
+            // Set location on notification click
+            document.addEventListener('deviceready', function(){
+                cordova.plugins.notification.local.onclick = function (notification) {
+                    location.href="index.html";
+                };
+            }, false);
+
+            // Background Mode
+            document.addEventListener('deviceready', function () {
+                cordova.plugins.backgroundMode.setDefaults({
+                    title: "Schmee in the background",
+                    text: 'Watching incoming SMS.',
+                    icon: "icon",
+                    smallIcon: "icon24"
+                });
+
+                cordova.plugins.backgroundMode.enable();
+
+                cordova.plugins.backgroundMode.onactivate = function () {
+                    setTimeout(function () {
+                        cordova.plugins.backgroundMode.configure({
+                            title: "Schmee in the background",
+                            text: 'Watching for incoming SMS....',
+                            icon: "icon",
+                            smallIcon: "icon24"
+                        });
+                    }, 5000);
+                }
+            }, false);
+        }
+
+
+        var smsBuffer = [];
+
+        function mergeBuffer() {
+            if (smsBuffer.length > 1) {
+                if (smsBuffer[0].address == smsBuffer[1].address) {
+                    smsBuffer[0].body = smsBuffer[0].body + smsBuffer[1].body;
+                    smsBuffer.splice(1, 1);
+                    mergeBuffer();
+                } else {
+                    schmeeNotifications(smsBuffer[0]);
+                    schmeeNotifications(smsBuffer[1]);
+                    smsBuffer.splice(0,2);
+                    mergeBuffer();
+                }
+            } else if (smsBuffer.length == 1) {
+                schmeeNotifications(smsBuffer[0]);
+                smsBuffer = [];
+            }
+        }
+
+
+        function bufferSMS(sms) {
+            // called when an sms is received, adds sms to buffer
+            if (sms.body.length < 153 && smsBuffer.length == 0) {
+                schmeeNotifications(sms);
+            } else {
+                smsBuffer.push(sms);
+                setTimeout(mergeBuffer, 500);
+            }
+        }
+
+        
+        function update( id, str ) {
+            $('div#' + id).html( str );
+        }
+        function updateStatus( str ) {
+            $('div#status').html( str );
+        }
+        function updateData( str ) {
+            $('#data').html( str );
+        }
+        
+        function sendSMS() {
+            var sendto = $('input#smsTo').val().trim();
+            var textmsg = $('textarea#smsBody').val();
+            if(sendto.indexOf(";") >=0) {
+                sendto = sendto.split(";");
+                for(i in sendto) {
+                    sendto[i] = sendto[i].trim();
+                }
+            }
+            if(SMS) SMS.sendSMS(sendto, textmsg, function(){}, function(str){alert(str);});
+        }
+
+        function listSMS() {
+            updateData('');
+            
+            if(SMS) SMS.listSMS({}, function(data){
+                updateStatus('sms listed as json array');
+                
+                var html = "";
+                if(Array.isArray(data)) {
+                    for(var i in data) {
+                        var sms = data[i];
+                        html += sms.address + ": " + sms.body + "<br/>";
+                    }
+                }
+                updateData( html );
+                
+            }, function(err){
+                updateStatus('error list sms: ' + err);
+            });
+        }
+
+        function deleteLastSMS() {
+            updateData('');
+
+            if(smsList.length == 0) {
+                updateStatus( 'no sms id to delete' );
+                return;
+            }
+            
+            var sms = smsList.pop();
+            
+            if(SMS) SMS.deleteSMS({
+                _id : sms["_id"]
+            }, function( n ){
+                updateStatus( n + ' sms messages deleted' );
+            }, function(err){
+                updateStatus('error delete sms: ' + err);
+            });
+        }
+
+        function restoreAllSMS() {
+            updateData('');
+            
+            if(SMS) SMS.restoreSMS(smsList, function( n ){
+                smsList.length = 0;
+                updateStatus(n + ' sms messages restored');
+                
+            }, function(err){
+                updateStatus('error restore sms: ' + err);
+            });
+        }
+
+        function startWatch() {
+            if(SMS) SMS.startWatch(function(){
+                $('#watchBtn').html('Stop Watching SMS');
+            }, function(){
+                updateStatus('failed to start watching');
+            });
+        }
+
+        function stopWatch() {
+            if(SMS) SMS.stopWatch(function(){
+                $('#watchBtn').html('Start Watching SMS');
+            }, function(){
+                updateStatus('failed to stop watching');
+            });
+        }
+
+        function toggleWatch() {
+            watching = ! watching;
+
+            if (watching) {
+                startWatch();
+            } else {
+                stopWatch();
+            }
+        }
+        
+        function toggleIntercept() {
+            interceptEnabled = ! interceptEnabled;
+            
+            if(interceptEnabled) {
+                smsList.length = 0;
+            }
+            
+            if(SMS) SMS.enableIntercept(interceptEnabled, function(){}, function(){});
+        }
+
+    </script>
+</body>
+</html>
