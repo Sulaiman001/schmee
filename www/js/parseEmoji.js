@@ -86,12 +86,22 @@ function parseHowler(sms) {
 }
 
 
+function cutEverythingAfterM(someStr) {
+    if (someStr.indexOf('M') > -1) {
+        return someStr.substring(0, someStr.indexOf('M')+1)
+    } else if (someStr.indexOf('m') > -1) {
+        return someStr.substring(0, someStr.indexOf('m')+1)
+    }
+    return someStr;
+}
+
+
 function parseScheduleDateStr(sms) {
     // returns the str following the identified !schedule emoji
     for (i=0;i<schedule_emojis.length;i++) {
         if (sms.indexOf(schedule_emojis[i]) > 0) {
             var afterSchedule = sms.substr(sms.indexOf(schedule_emojis[i]) + schedule_emojis[i].length);
-            return afterSchedule.trim();
+            return cutEverythingAfterM(afterSchedule.trim());
         }
     }
     return null;
