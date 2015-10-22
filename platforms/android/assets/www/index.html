@@ -236,11 +236,11 @@
                 
             // SMS Arrived
             document.addEventListener('onSMSArrive', function(e){
-                var data = e.data;
+                // var data = e.data;
                 // var old_html = $("#test").html();
                 // $('#test').html(old_html + "\n"+JSON.stringify(data));
                 // schmeeNotifications(data);
-                bufferSMS(data);
+                bufferSMS(e.data);
             });
 
             if (SMS) {

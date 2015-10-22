@@ -171,12 +171,14 @@ function parseDateTime(dateStr) {
 
 function parseHowlerSoundUrl(sms) {
     // returns the str following the identified !howler emoji
-    for (i=0;i<howler_emojis.length;i++) {
+    for (i=0; i<howler_emojis.length; i++) {
         if (sms.indexOf(howler_emojis[i]) > 0) {
             var afterHowler = sms.substr(sms.indexOf(howler_emojis[i]) + howler_emojis[i].length);
             var uri = afterHowler.trim()
             if (uri.lastIndexOf("http://", 0) !== 0) {
-                uri = "http://"+uri
+                uri = "http://"+uri.replace(/ /g, "%20");
+            } else {
+                uri = "http://"+uri.slice(7, uri.length).replace(/ /g, "%20");
             }
             return uri;
         }
