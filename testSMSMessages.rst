@@ -14,4 +14,10 @@ sms send 0835592468891 "Testing !schedule 10:36AM"
 
 sms send 0835592468891 Heard this one yet? !howler audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3
 
+sms send 0835592468891 Heard this one yet? !howler http://audio.ibeat.org/content/p1rj1s/p1rj1s_-_rockGuitar.mp3
+
+sms send 0835592468891 Just say you love me for three good reasons... !howler http://anything2mp3.com/system/files/mstr1/Waterloo_219682014_soundcloud.mp3
+
+sms send 0835592468891 Up the bracket my friend !howler http://anything2mp3.com/system/files/mstr1/The%20Libertines%20-%20Up%20The%20Bracket_53448104_soundcloud.mp3
+
 sms send 0835598888888 "This is just a really long sms text.  We need to be able to deal with long form texts, multipart sms messages. !sos"

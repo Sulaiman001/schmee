@@ -61,9 +61,10 @@ function testParseHowlerSoundUrl() {
     var errorCount = 0;
     var testHowler = "Danger Zone !howler ehab.it/dangerzone.mp3"
     var url = parseHowlerSoundUrl(testHowler);
-    if (url == "http://ehab.it/dangerzone.mp3") {
+    if (url == "http%3A%2F%2Fehab.it%2Fdangerzone.mp3") {
         console.log("+ Success!  parseHowlerSoundUrl is functioning properly");
     } else {
+        console.log(url);
         console.log("- Error!  parseHowlerSoundUrl is not functioning properly");
         errorCount++;
     }

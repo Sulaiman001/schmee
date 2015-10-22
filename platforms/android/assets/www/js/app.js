@@ -35,6 +35,11 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     $scope.messages.unshift(msg);
   }
 
+  $scope.removeMessage = function(msg) {
+    var index = $scope.messages.indexOf(msg);
+    $scope.messages.splice(index, 1);
+  }
+
   $scope.replySMS = function(fromNumber) {
     $scope.sms.to = fromNumber;
     $scope.openModal();

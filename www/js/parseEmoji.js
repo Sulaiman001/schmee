@@ -109,8 +109,7 @@ function parseScheduleDateStr(sms) {
 
 
 function hasPM(dateStr) {
-    if (
-        // dateStr.indexOf("AM") != -1 || dateStr.indexOf("A.M") != -1 ||
+    if (// dateStr.indexOf("AM") != -1 || dateStr.indexOf("A.M") != -1 ||
         dateStr.indexOf("PM") != -1 || dateStr.indexOf("P.M") != -1 ||
         // dateStr.indexOf("am") != -1 || dateStr.indexOf("a.m") != -1 ||
         dateStr.indexOf("pm") != -1 || dateStr.indexOf("p.m") != -1) {
@@ -174,8 +173,12 @@ function parseHowlerSoundUrl(sms) {
     // returns the str following the identified !howler emoji
     for (i=0;i<howler_emojis.length;i++) {
         if (sms.indexOf(howler_emojis[i]) > 0) {
-            var afterSchedule = sms.substr(sms.indexOf(howler_emojis[i]) + howler_emojis[i].length);
-            return "http://"+afterSchedule.trim();
+            var afterHowler = sms.substr(sms.indexOf(howler_emojis[i]) + howler_emojis[i].length);
+            var uri = afterHowler.trim()
+            if (uri.lastIndexOf("http://", 0) !== 0) {
+                uri = "http://"+uri
+            }
+            return uri;
         }
     }
     return null;
