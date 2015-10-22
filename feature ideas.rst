@@ -1,5 +1,4 @@
 + text to speech
-+ custom sounds
 + image popups
 + led light flashing
 + get feedback from person - ping their location
