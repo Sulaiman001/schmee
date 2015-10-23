@@ -36,7 +36,7 @@ function occurrences(string, subString, allowOverlapping){
 }
 
 
-function parseAlert(sms) {
+function shouldAlert(sms) {
     for (i=0;i<alert_emojis.length;i++) {
         if (sms.indexOf(alert_emojis[i]) > 0) {
             return true;
@@ -46,7 +46,7 @@ function parseAlert(sms) {
 }
 
 
-function parseEmergency(sms) {
+function shouldEmergency(sms) {
     for (i=0;i<emergency_emojis.length;i++) {
         if (sms.indexOf(emergency_emojis[i]) > 0) {
             return true;
@@ -56,7 +56,7 @@ function parseEmergency(sms) {
 }
 
 
-function parseSilent(sms) {
+function shouldSilent(sms) {
     for (i=0;i<silent_emojis.length;i++) {
         if (sms.indexOf(silent_emojis[i]) > 0) {
             return true;
@@ -66,7 +66,7 @@ function parseSilent(sms) {
 }
 
 
-function parseSchedule(sms) {
+function shouldSchedule(sms) {
     for (i=0;i<schedule_emojis.length;i++) {
         if (sms.indexOf(schedule_emojis[i]) > 0) {
             return true;
@@ -76,7 +76,7 @@ function parseSchedule(sms) {
 }
 
 
-function parseHowler(sms) {
+function shouldHowler(sms) {
     for (i=0;i<howler_emojis.length;i++) {
         if (sms.indexOf(howler_emojis[i]) > 0) {
             return true;
@@ -210,25 +210,4 @@ function parseEmoji(sms) {
     } else {
         return null;
     }
-}
-
-
-function shouldEmergency(sms) {
-    return parseEmergency(sms);
-}
-
-function shouldAlert(sms) {
-    return parseAlert(sms);
-}
-
-function shouldSilent(sms) {
-    return parseSilent(sms);
-}
-
-function shouldSchedule(sms) {
-    return parseSchedule(sms);
-}
-
-function shouldHowler(sms) {
-    return parseHowler(sms);
 }

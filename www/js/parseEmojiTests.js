@@ -61,7 +61,7 @@ function testParseHowlerSoundUrl() {
     var errorCount = 0;
     var testHowler = "Danger Zone !howler ehab.it/dangerzone.mp3"
     var url = parseHowlerSoundUrl(testHowler);
-    if (url == "http%3A%2F%2Fehab.it%2Fdangerzone.mp3") {
+    if (url == "http://ehab.it/dangerzone.mp3") {
         console.log("+ Success!  parseHowlerSoundUrl is functioning properly");
     } else {
         console.log(url);
@@ -101,7 +101,7 @@ function parseEmojiTest() {
     var return_emoji = "";
     console.log("Testing parseEmoji.js...")
 
-    if (parseEmergency(testEmergencySMS)) {
+    if (shouldEmergency(testEmergencySMS)) {
         console.log("+ Success!  Emergency emoji identified");
     } else {
         console.log("- Error identifying emergency emoji");
@@ -110,7 +110,7 @@ function parseEmojiTest() {
     }
 
 
-    if (parseAlert(testAlertSMS)) {
+    if (shouldAlert(testAlertSMS)) {
         console.log("+ Success!  Alert emoji identified");
     } else {
         console.log("- Error identifying alert emoji");
@@ -119,7 +119,7 @@ function parseEmojiTest() {
     }
 
 
-    if (parseSilent(testSilentSMS)) {
+    if (shouldSilent(testSilentSMS)) {
         console.log("+ Success!  Silent emoji identified");
     } else {
         console.log("- Error identifying silent emoji");
@@ -127,7 +127,7 @@ function parseEmojiTest() {
         errorCount += 1;
     }
 
-    if (parseSchedule(testScheduleSMS)) {
+    if (shouldSchedule(testScheduleSMS)) {
         console.log("+ Success!  Schedule emoji identified");
     } else {
         console.log("- Error identifying schedule emoji");
@@ -135,7 +135,7 @@ function parseEmojiTest() {
         errorCount += 1;
     }
 
-    if (parseHowler(testHowlerSMS)) {
+    if (shouldHowler(testHowlerSMS)) {
         console.log("+ Success!  Howler emoji identified");
     } else {
         console.log("- Error identifying howler emoji");
