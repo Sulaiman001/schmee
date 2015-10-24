@@ -65,7 +65,7 @@
     <author email="glen@ehab.it" href="https://ehab.it/">
     Glen Baker
   </author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.1.2:8100" />
     <access origin="*" />
     <access launch-external="yes" origin="sms:*" />
     <preference name="webviewbounce" value="false" />
