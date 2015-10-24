@@ -6,7 +6,7 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
     <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 
-    <title>Schmee</title>
+    <title>Ringler</title>
 
     <link rel="shortcut icon" type="image/png" href="favicon.png">
 
@@ -237,10 +237,6 @@
                 
             // SMS Arrived
             document.addEventListener('onSMSArrive', function(e){
-                // var data = e.data;
-                // var old_html = $("#test").html();
-                // $('#test').html(old_html + "\n"+JSON.stringify(data));
-                // schmeeNotifications(data);
                 bufferSMS(e.data);
             });
 
@@ -259,7 +255,7 @@
             // Background Mode
             document.addEventListener('deviceready', function () {
                 cordova.plugins.backgroundMode.setDefaults({
-                    title: "Schmee in the background",
+                    title: "Ringler in the background",
                     text: 'Watching incoming SMS.',
                     icon: "icon",
                     smallIcon: "icon24"
@@ -270,7 +266,7 @@
                 cordova.plugins.backgroundMode.onactivate = function () {
                     setTimeout(function () {
                         cordova.plugins.backgroundMode.configure({
-                            title: "Schmee in the background",
+                            title: "Ringler in the background",
                             text: 'Watching for incoming SMS....',
                             icon: "icon",
                             smallIcon: "icon24"
