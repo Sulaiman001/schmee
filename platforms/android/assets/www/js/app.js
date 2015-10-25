@@ -83,6 +83,18 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 .controller('ContactsCtrl', function($scope, $cordovaContacts) {
   var isAndroid = ionic.Platform.isAndroid();
 
+  $scope.toggleContact = function(contact) {
+    if ($scope.isContactShown(contact)) {
+      $scope.shownContact = null;
+    } else {
+      $scope.shownContact = contact;
+    }
+  };
+
+  $scope.isContactShown = function(contact) {
+    return $scope.shownContact === contact;
+  };
+
   $scope.loadContacts = function() {
       if (isAndroid) {
         $cordovaContacts.find({multiple: true}).then(function(res) {

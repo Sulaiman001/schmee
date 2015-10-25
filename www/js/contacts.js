@@ -42,7 +42,7 @@ function loadBool(name) {
 
 function hasPhoneNumber(contact) {
 	// returns true if contaact has a phone number
-	if (contact['phoneNumbers'].length >= 1) {
+	if (contact['phoneNumbers'] !== null) {
 		return true;
 	}
 	return false;

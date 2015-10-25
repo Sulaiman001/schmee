@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">-->
 
     <title>Ringler</title>
 
@@ -114,39 +115,52 @@
         </ion-nav-bar>
         <ion-content >
             <ion-list>
-                <ion-item ng-repeat="contact in contacts">
-                    <h2>{{contact.displayName}}</h2>
-
-                    <ion-checkbox class='assertive' ng-model="contact.emergency"
+                <div ng-repeat="contact in contacts">
+                    <ion-item class="item-stable"
+                            ng-click="toggleContact(contact)"
+                            ng-class="{active: isContactShown(contact)}">
+                      
+                        <i class="icon" ng-class="isContactShown(contact) ? 'ion-minus' : 'ion-plus'"></i>
+                        {{contact.displayName}}
+                    </ion-item>
+                    <ion-item class='item-accordion' ng-show="isContactShown(contact)">
+                    <ion-toggle class='assertive'
+                                  ng-model="contact.emergency"
                                   ng-checked="contact.emergency"
                                   ng-click="toggleEmergency(contact.id)">
                       Accept !sos 
-                    </ion-checkbox>
+                    </ion-toggle>
 
-                    <ion-checkbox class='positive' ng-model="contact.alerts"
+                    <ion-toggle class='positive'
+                                  ng-model="contact.alerts"
                                   ng-checked="contact.alerts"
                                   ng-click="toggleAlert(contact.id)">
                       Accept !alert 
-                    </ion-checkbox>
+                    </ion-toggle>
 
-                    <ion-checkbox ng-model="contact.silent"
+                    <ion-toggle class=''
+                                  ng-model="contact.silent"
                                   ng-checked="contact.silent"
                                   ng-click="toggleSilent(contact.id)">
                       Accept !silent 
-                    </ion-checkbox>
+                    </ion-toggle>
 
-                    <ion-checkbox class='energized' ng-model="contact.schedule"
+                    <ion-toggle class='energized'
+                                  ng-model="contact.schedule"
                                   ng-checked="contact.schedule"
                                   ng-click="toggleSchedule(contact.id)">
                       Accept !schedule
-                    </ion-checkbox>
+                    </ion-toggle>
 
-                    <ion-checkbox class='royal' ng-model="contact.howler"
+                    <ion-toggle class='royal'
+                                  ng-model="contact.howler"
                                   ng-checked="contact.howler"
                                   ng-click="toggleHowler(contact.id)">
                       Accept !howler
-                    </ion-checkbox>
-                </ion-item>
+                    </ion-toggle>
+                    </ion-item>
+                </div>
+
             </ion-list>
         </ion-content>
       </ion-view>
@@ -256,24 +270,25 @@
             // Background Mode
             document.addEventListener('deviceready', function () {
                 cordova.plugins.backgroundMode.setDefaults({
-                    title: "Ringler in the background",
-                    text: 'Watching incoming SMS.',
-                    icon: "icon",
-                    smallIcon: "icon24"
+                    // title: "Ringler in the background",
+                    // text: 'Watching incoming SMS.',
+                    // icon: "icon",
+                    // smallIcon: "icon24"
+                    silent: true
                 });
 
                 cordova.plugins.backgroundMode.enable();
 
-                cordova.plugins.backgroundMode.onactivate = function () {
-                    setTimeout(function () {
-                        cordova.plugins.backgroundMode.configure({
-                            title: "Ringler in the background",
-                            text: 'Watching for incoming SMS....',
-                            icon: "icon",
-                            smallIcon: "icon24"
-                        });
-                    }, 5000);
-                }
+                // cordova.plugins.backgroundMode.onactivate = function () {
+                //     setTimeout(function () {
+                //         cordova.plugins.backgroundMode.configure({
+                //             title: "Ringler in the background",
+                //             text: 'Watching for incoming SMS....',
+                //             icon: "icon",
+                //             smallIcon: "icon24"
+                //         });
+                //     }, 5000);
+                // }
             }, false);
         }
 
