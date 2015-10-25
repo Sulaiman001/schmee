@@ -40,10 +40,30 @@ function loadBool(name) {
 }
 
 
+function hasPhoneNumber(contact) {
+	// returns true if contaact has a phone number
+	if (contact['phoneNumbers'].length >= 1) {
+		return true;
+	}
+	return false;
+}
+
+
+function contactsWithPhoneNumbers(contacts) {
+	var contactsWithNumbers = [];
+	for (i=0; i < contacts.length; i++) {
+		if (hasPhoneNumber(contacts[i])) {
+			contactsWithNumbers.push(contacts[i]);
+		} 
+	}
+	return contactsWithNumbers;
+}
+
+
 function onContactsLoadSuccess(contacts) {
     // js = callback hell
     var mergedContacts = mergeWithSavedContacts(contacts);
-    saveContacts(mergedContacts);
+    saveContacts(contactsWithPhoneNumbers(mergedContacts));
     // $('#test').html(JSON.stringify(mergedContacts));
 }
 
@@ -104,7 +124,10 @@ function mergeWithSavedContacts(contactsArray) {
 			}
 
 			if (!matchFound) {
-				newContacts.push(contactsArray[i])
+				if (hasPhoneNumber(contactsArray[i])) {
+					// only push to newContacts if contact has a phoneNumber
+					newContacts.push(contactsArray[i]);
+				}
 			}
 		}
 	} else {
