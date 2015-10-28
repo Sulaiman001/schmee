@@ -8,6 +8,13 @@ module.exports = [
         ]
     },
     {
+        "file": "plugins/com.rjfun.cordova.sms/www/SMS.js",
+        "id": "com.rjfun.cordova.sms.SMS",
+        "clobbers": [
+            "window.SMS"
+        ]
+    },
+    {
         "file": "plugins/cordova-plugin-console/www/logger.js",
         "id": "cordova-plugin-console.logger",
         "clobbers": [
@@ -283,13 +290,6 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/com.rjfun.cordova.sms/www/SMS.js",
-        "id": "com.rjfun.cordova.sms.SMS",
-        "clobbers": [
-            "window.SMS"
-        ]
-    },
-    {
         "file": "plugins/de.appplant.cordova.plugin.local-notification/www/local-notification.js",
         "id": "de.appplant.cordova.plugin.local-notification.LocalNotification",
         "clobbers": [
@@ -318,6 +318,8 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "com.ionic.keyboard": "1.0.4",
+    "com.rjfun.cordova.sms": "1.0.3",
+    "cordova-plugin-android-support-v4": "21.0.1",
     "cordova-plugin-console": "1.0.1",
     "cordova-plugin-contacts": "1.1.0",
     "cordova-plugin-device": "1.0.1",
@@ -327,7 +329,6 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.0.0",
     "cordova-plugin-x-toast": "2.2.1",
     "de.appplant.cordova.plugin.background-mode": "0.6.4",
-    "com.rjfun.cordova.sms": "1.0.3",
     "de.appplant.cordova.plugin.local-notification": "0.8.2-dev"
 }
 // BOTTOM OF METADATA
