@@ -17,10 +17,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Contacts\"><param name=\"android-package\" value=\"org.apache.cordova.contacts.ContactManager\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
                             "count": 1
                         },
@@ -54,6 +50,10 @@
                         },
                         {
                             "xml": "<feature name=\"LocalNotification\"><param name=\"android-package\" value=\"de.appplant.cordova.plugin.localnotification.LocalNotification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"ContactsPhoneNumbers\"><param name=\"android-package\" value=\"com.dbaq.cordova.contactsPhoneNumbers.ContactsManager\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -96,14 +96,6 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.READ_CONTACTS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\" />",
                             "count": 1
                         },
                         {
@@ -190,9 +182,6 @@
         "cordova-plugin-console": {
             "PACKAGE_NAME": "it.ehab.ringler"
         },
-        "cordova-plugin-contacts": {
-            "PACKAGE_NAME": "it.ehab.ringler"
-        },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "it.ehab.ringler"
         },
@@ -215,6 +204,9 @@
             "PACKAGE_NAME": "it.ehab.ringler"
         },
         "de.appplant.cordova.plugin.local-notification": {
+            "PACKAGE_NAME": "it.ehab.ringler"
+        },
+        "com.dbaq.cordova.contactsPhoneNumbers": {
             "PACKAGE_NAME": "it.ehab.ringler"
         }
     },

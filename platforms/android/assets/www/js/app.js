@@ -80,7 +80,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   // });
 })
 
-.controller('ContactsCtrl', function($scope, $cordovaContacts) {
+.controller('ContactsCtrl', function($scope) {
   var isAndroid = ionic.Platform.isAndroid();
 
   $scope.toggleContact = function(contact) {
@@ -97,10 +97,16 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
   $scope.loadContacts = function() {
       if (isAndroid) {
-        $cordovaContacts.find({multiple: true}).then(function(res) {
-          $scope.contacts = mergeWithSavedContacts(res);
-          saveContacts($scope.contacts);
-        });
+        // $cordovaContacts.find({multiple: true}).then(function(res) {
+        //   $scope.contacts = mergeWithSavedContacts(res);
+        //   saveContacts($scope.contacts);
+        // });
+        // navigator.contactsPhoneNumbers.list(function(contacts) {
+        //   onContactsLoadSuccess(contacts);
+        // }, function(error) {
+        //   onContactsLoadError(error);
+        // });
+        $scope.contacts = loadSavedContacts();
       } else {
         $scope.contacts = mergeWithSavedContacts(testContacts);
         saveContacts($scope.contacts);

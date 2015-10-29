@@ -44,43 +44,9 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
     $scope.sms.to = fromNumber;
     $scope.openModal();
   }
-
-  // $scope.sendSMS = function() {
-  //   if (SMS) {
-  //     sendSMS();
-  //   } else {
-  //      alert( 'SMS plugin not available' ); return;
-  //   }
-  //   $scope.closeModal();
-  // }
-
-  // $ionicModal.fromTemplateUrl('templates/sendMessageModal.html', {
-  //   scope: $scope,
-  //   animation: 'slide-in-up'
-  // }).then(function(modal) {
-  //   $scope.modal = modal;
-  // });
-
-  // $scope.openModal = function() {
-  //   $scope.modal.show();
-  // };
-
-  // $scope.closeModal = function() {
-  //   $scope.modal.hide();
-  // };
-
-  // $scope.$on('$destroy', function() {
-  //   $scope.modal.remove();
-  // });
-
-  // $scope.$on('modal.hidden', function() {
-  // });
-
-  // $scope.$on('modal.removed', function() {
-  // });
 })
 
-.controller('ContactsCtrl', function($scope, $cordovaContacts) {
+.controller('ContactsCtrl', function($scope) {
   var isAndroid = ionic.Platform.isAndroid();
 
   $scope.toggleContact = function(contact) {
@@ -97,10 +63,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
   $scope.loadContacts = function() {
       if (isAndroid) {
-        $cordovaContacts.find({multiple: true}).then(function(res) {
-          $scope.contacts = mergeWithSavedContacts(res);
-          saveContacts($scope.contacts);
-        });
+        $scope.contacts = loadSavedContacts();
       } else {
         $scope.contacts = mergeWithSavedContacts(testContacts);
         saveContacts($scope.contacts);

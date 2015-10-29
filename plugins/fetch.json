@@ -31,14 +31,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-contacts": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-contacts"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-console": {
         "source": {
             "type": "registry",
@@ -109,6 +101,14 @@
             "type": "git",
             "url": "https://github.com/katzer/cordova-plugin-local-notifications",
             "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.dbaq.cordova.contactsPhoneNumbers": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-contacts-phonenumbers"
         },
         "is_top_level": true,
         "variables": {}

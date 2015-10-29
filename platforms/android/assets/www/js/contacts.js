@@ -49,6 +49,14 @@ function hasPhoneNumber(contact) {
 }
 
 
+function hasDisplayName(contact) {
+	if (contact['displayname'] !== null) {
+		return true;
+	}
+	return false;
+}
+
+
 function contactsWithPhoneNumbers(contacts) {
 	var contactsWithNumbers = [];
 	for (i=0; i < contacts.length; i++) {
@@ -60,10 +68,21 @@ function contactsWithPhoneNumbers(contacts) {
 }
 
 
+function contactsWithNumbersAndNames(contacts) {
+	var contactsWithDisplayNames = [];
+	for (i=0; i< contacts.length; i++) {
+		if (hasPhoneNumber(contacts[i]) && hasDisplayName(contacts[i])) {
+			contactsWithDisplayNames.push(contacts[i]);
+		}
+	}
+	return contactsWithDisplayNames;
+}
+
+
 function onContactsLoadSuccess(contacts) {
     // js = callback hell
     var mergedContacts = mergeWithSavedContacts(contacts);
-    saveContacts(contactsWithPhoneNumbers(mergedContacts));
+    saveContacts(contactsWithNumbersAndNames(mergedContacts));
     // $('#test').html(JSON.stringify(mergedContacts));
 }
 
@@ -76,11 +95,16 @@ function onContactsLoadError(contactError) {
 
 function loadContacts() {
     if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
-        var options = new ContactFindOptions();
-        options.filter = "";          // empty search string returns all contacts
-        options.multiple = true;      // return multiple results
-        filter = ["displayName", "name", "nickname", "id", "phoneNumbers"];   // return contact.displayName 
-        navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
+        // var options = new ContactFindOptions();
+        // options.filter = "";          // empty search string returns all contacts
+        // options.multiple = true;      // return multiple results
+        // filter = ["displayName", "name", "nickname", "id", "phoneNumbers"];   // return contact.displayName 
+        // navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
+    	navigator.contactsPhoneNumbers.list(function(contacts) {
+	    	onContactsLoadSuccess(contacts);
+	   	}, function(error) {
+	    	onContactsLoadError(error);
+	   	});
     } else {
         var mergedContacts = mergeWithSavedContacts(testContacts);
 	    saveContacts(mergedContacts);
@@ -114,7 +138,8 @@ function mergeWithSavedContacts(contactsArray) {
 		for (i = 0; i < contactsArray.length; ++i) {
 			var matchFound = false;
 			for(j = 0; j < savedContacts.length && matchFound == false; ++j ) {
-				if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound) {
+				if (contactsArray[i]['id'] == savedContacts[j]['id'] && !matchFound
+					&& contactsArray[i]['phoneNumbers'] != null && contactsArray[i]['displayName'] != null) {
 					matchFound = true;
 					savedContacts[j]['displayName'] = contactsArray[i]['displayName'];
 					savedContacts[j]['name'] = contactsArray[i]['name'];
@@ -126,7 +151,10 @@ function mergeWithSavedContacts(contactsArray) {
 			if (!matchFound) {
 				if (hasPhoneNumber(contactsArray[i])) {
 					// only push to newContacts if contact has a phoneNumber
-					newContacts.push(contactsArray[i]);
+					if (hasDisplayName(contactsArray[i])) {
+						// only push to newContacts if contact has a displayName
+						newContacts.push(contactsArray[i]);
+					}
 				}
 			}
 		}

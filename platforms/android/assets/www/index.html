@@ -124,6 +124,9 @@
                         {{contact.displayName}}
                     </ion-item>
                     <ion-item class='item-accordion' ng-show="isContactShown(contact)">
+
+                    <ion-item ng-repeat="num in contact.phoneNumbers">{{num.number}}</ion-item>
+
                     <ion-toggle class='assertive'
                                   ng-model="contact.emergency"
                                   ng-checked="contact.emergency"

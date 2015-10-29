@@ -124,6 +124,9 @@
                         {{contact.displayName}}
                     </ion-item>
                     <ion-item class='item-accordion' ng-show="isContactShown(contact)">
+
+                    <ion-item ng-repeat="num in contact.phoneNumbers">{{num.number}}</ion-item>
+
                     <ion-toggle class='assertive'
                                   ng-model="contact.emergency"
                                   ng-checked="contact.emergency"
@@ -278,17 +281,6 @@
                 });
 
                 cordova.plugins.backgroundMode.enable();
-
-                // cordova.plugins.backgroundMode.onactivate = function () {
-                //     setTimeout(function () {
-                //         cordova.plugins.backgroundMode.configure({
-                //             title: "Ringler in the background",
-                //             text: 'Watching for incoming SMS....',
-                //             icon: "icon",
-                //             smallIcon: "icon24"
-                //         });
-                //     }, 5000);
-                // }
             }, false);
         }
 
