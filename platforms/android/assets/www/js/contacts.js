@@ -237,7 +237,7 @@ function isTrue(contactsArray, phoneNumber, field) {
 		var numbersArray = contactsArray[i].phoneNumbers;
 		if (numbersArray instanceof Array) {
 			for (j = 0; j < numbersArray.length; j++) {
-				var num = numbersArray[j]["value"];
+				var num = numbersArray[j]["number"];
 				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return contactsArray[i][field];
@@ -254,7 +254,7 @@ function isKnownContact(contactsArray, phoneNumber) {
 		var numbersArray = contactsArray[i].phoneNumbers;
 		if (numbersArray instanceof Array) {
 			for (j = 0; j < numbersArray.length; j++) {
-				var num = numbersArray[j]["value"];
+				var num = numbersArray[j]["number"];
 				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return true;
@@ -272,7 +272,7 @@ function getDisplayName(contactsArray, phoneNumber) {
 		var numbersArray = contactsArray[i].phoneNumbers;
 		if (numbersArray instanceof Array) {
 			for (j = 0; j < numbersArray.length; j++) {
-				var num = numbersArray[j]["value"];
+				var num = numbersArray[j]["number"];
 				num = stripNumber(num)
 				if (num === phoneNumber.slice(3, phoneNumber.length)) {
 					return contactsArray[i].displayName;

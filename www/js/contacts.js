@@ -83,7 +83,6 @@ function onContactsLoadSuccess(contacts) {
     // js = callback hell
     var mergedContacts = mergeWithSavedContacts(contacts);
     saveContacts(contactsWithNumbersAndNames(mergedContacts));
-    // $('#test').html(JSON.stringify(mergedContacts));
 }
 
 
@@ -95,11 +94,6 @@ function onContactsLoadError(contactError) {
 
 function loadContacts() {
     if(( /(ipad|iphone|ipod|android)/i.test(navigator.userAgent) )) {
-        // var options = new ContactFindOptions();
-        // options.filter = "";          // empty search string returns all contacts
-        // options.multiple = true;      // return multiple results
-        // filter = ["displayName", "name", "nickname", "id", "phoneNumbers"];   // return contact.displayName 
-        // navigator.contacts.find(filter, onContactsLoadSuccess, onContactsLoadError, options);
     	navigator.contactsPhoneNumbers.list(function(contacts) {
 	    	onContactsLoadSuccess(contacts);
 	   	}, function(error) {
