@@ -50,10 +50,20 @@ function hasPhoneNumber(contact) {
 
 
 function hasDisplayName(contact) {
-	if (contact['displayname'] !== null) {
+	if (contact['displayName'] !== null) {
 		return true;
 	}
 	return false;
+}
+
+
+function sortContactsAlphabetically(contacts) {
+	contacts.sort(function(a, b) {
+		if(a.displayName < b.displayName) return -1;
+		if(a.displayName > b.displayName) return 1;
+		return 0
+	});
+	return contacts;
 }
 
 
@@ -101,7 +111,7 @@ function loadContacts() {
 	   	});
     } else {
         var mergedContacts = mergeWithSavedContacts(testContacts);
-	    saveContacts(mergedContacts);
+	    saveContacts(contactsWithNumbersAndNames(mergedContacts));
     }
 
     loadUnknownNumberVariables();

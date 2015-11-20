@@ -54,3 +54,13 @@ button {
 .list .item.item-accordion.ng-hide-remove {
   display: block !important;
 }
+
+
+.filter-bar-clear {
+	position: relative;
+	right: -40px;
+}
+
+.filter-bar-cancel {
+	width: 30px;
+}

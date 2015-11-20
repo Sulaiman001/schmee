@@ -1,7 +1,7 @@
 // Schmee Notifications app.js by Mocha Dick
-var debug = false;
+var debug = true;
 
-angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
+angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material',  'jett.ionic.filter.bar'])
 
 .controller('MessagesCtrl', function($scope, $ionicModal) {
   $scope.shouldShowDelete = true;
@@ -46,7 +46,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   }
 })
 
-.controller('ContactsCtrl', function($scope) {
+.controller('ContactsCtrl', function($scope, $ionicFilterBar) {
   var isAndroid = ionic.Platform.isAndroid();
 
   $scope.toggleContact = function(contact) {
@@ -62,12 +62,23 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   };
 
   $scope.loadContacts = function() {
-      if (isAndroid) {
-        $scope.contacts = loadSavedContacts();
-      } else {
-        $scope.contacts = mergeWithSavedContacts(testContacts);
-        saveContacts($scope.contacts);
-      }
+    $scope.contacts = loadSavedContacts();
+      // if (isAndroid) {
+      //   $scope.contacts = loadSavedContacts();
+      // } else {
+      //   $scope.contacts = mergeWithSavedContacts(contactsWithNumbersAndNames(testContacts));
+      //   saveContacts($scope.contacts);
+      // }
+  }
+
+  $scope.showFilterBar = function() {
+    var filterBarInstance = $ionicFilterBar.show({
+      items: $scope.contacts,
+      update: function (filteredItems) {
+        $scope.contacts = filteredItems;
+      },
+      filterProperties: 'displayName'
+    });
   }
 
   $scope.toggleSilent = function(id) {
@@ -142,7 +153,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
   $scope.init();
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $ionicFilterBarConfigProvider) {
 
   $ionicConfigProvider.tabs.position('bottom');
 
@@ -182,6 +193,7 @@ angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material'])
 
    $urlRouterProvider.otherwise("/tab/home");
 
+   $ionicFilterBarConfigProvider.theme('dark');
 })
 
 .config(['$compileProvider',

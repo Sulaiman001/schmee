@@ -9,7 +9,7 @@ var testContacts = [{
       	"howler": true,
       	"phoneNumbers": [{
 	      	"id": "4",
-	      	"value": "(559) 246-8891",
+	      	"number": "(559) 246-8891",
 	      	"type": "mobile"
 	    }]
 
@@ -18,7 +18,12 @@ var testContacts = [{
       "displayName": 'Robert Hawk',
 	  "emergency": true,
       "alerts": false,
-      "silent": true
+      "silent": true,
+      "phoneNumbers": [{
+	      	"id": "3",
+	      	"number": "(559) 8888-8822",
+	      	"type": "mobile"
+	    }]
     },
     { "id": "3",
       "displayName": 'Mocha Dick',
@@ -26,8 +31,8 @@ var testContacts = [{
       "alerts": false,
       "silent": false,
       "phoneNumbers": [{
-	      	"id": "4",
-	      	"value": "(559) 888-8888",
+	      	"id": "5",
+	      	"number": "(559) 888-8888",
 	      	"type": "mobile"
 	    }]
     }
