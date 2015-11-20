@@ -1,5 +1,5 @@
 // Schmee Notifications app.js by Mocha Dick
-var debug = true;
+var debug = false;
 
 angular.module('schmee', ['ionic', 'ngCordova', 'ionic-material',  'jett.ionic.filter.bar'])
 
